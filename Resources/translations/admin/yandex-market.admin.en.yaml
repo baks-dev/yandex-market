@@ -1,0 +1,26 @@
+page:
+  index: 'Yandex Market auth tokens'
+  new: 'Add Yandex Market auth tokens'
+  edit: 'Edit Yandex Market auth tokens'
+  delete: 'Delete Yandex Market auth tokens'
+
+breadcrumb:
+  index: 'Authorization Tokens'
+  new: 'Add authorization tokens'
+  edit: 'Edit authorization tokens'
+  delete: 'Delete authorization tokens'
+
+success:
+  new: 'Yandex Market auth token successfully added'
+  edit: 'Yandex Market auth token updated successfully'
+  delete: 'Yandex Market auth token deleted successfully'
+  restore: 'Yandex Market auth token successfully restored'
+
+danger:
+  new: '%s: Error adding Yandex Market auth token'
+  edit: '%s: Error refreshing Yandex Market auth token'
+  delete: '%s: Error refreshing Yandex Market auth token'
+  restore: '%s: Error refreshing Yandex Market auth token'
+form:
+  delete:
+    h4: 'Are you sure you want to delete the tokens?'

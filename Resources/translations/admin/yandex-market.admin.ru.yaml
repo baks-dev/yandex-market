@@ -1,0 +1,26 @@
+page:
+  index: 'Токены авторизации Yandex Market'
+  new: 'Добавить токены авторизации Yandex Market'
+  edit: 'Редактировать токены авторизации Yandex Market'
+  delete: 'Удалить токены авторизации Yandex Market'
+
+breadcrumb:
+  index: 'Токены авторизации'
+  new: 'Добавить токены авторизации'
+  edit: 'Редактировать токены авторизации'
+  delete: 'Удалить токены авторизации'
+
+success:
+  new: 'Токен авторизации Yandex Market успешно добавлен'
+  edit: 'Токен авторизации Yandex Market успешно обновлен'
+  delete: 'Токен авторизации Yandex Market успешно удален'
+  restore: 'Токен авторизации Yandex Market успешно восстановлен'
+
+danger:
+  new: '%s: Ошибка при добавлении токена авторизации Yandex Market'
+  edit: '%s: Ошибка при обновлении токена авторизации Yandex Market'
+  delete: '%s: Ошибка при обновлении токена авторизации Yandex Market'
+  restore: '%s: Ошибка при восстановлении токена авторизации Yandex Market'
+form:
+  delete:
+    h4: 'Вы уверены, что желаете удалить токены?'
