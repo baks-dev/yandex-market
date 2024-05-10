@@ -23,9 +23,10 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Yandex\Market\Api\FBY\AllShops;
+namespace BaksDev\Yandex\Market\Api\AllShops;
 
 use BaksDev\Yandex\Market\Api\YandexMarket;
+use DateInterval;
 use DomainException;
 use Generator;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -48,24 +49,29 @@ final class YandexMarketShopRequest extends YandexMarket
 
         $cache = new FilesystemAdapter('yandex-market');
 
-        $content = $cache->get('yandex-market-fby'.$this->profile->getValue(), function(
+        $content = $cache->get('ya-market-shops-'.$this->profile->getValue(), function(
             ItemInterface $item
         ) {
 
-            $item->expiresAfter(60 * 60);
+            $item->expiresAfter(DateInterval::createFromDateString('1 day'));
 
             $response = $this->TokenHttpClient()
                 ->request(
                     'GET',
-                    '/campaigns'
+                    '/campaigns',
                 );
+
+            $content = $response->toArray(false);
 
             if($response->getStatusCode() !== 200)
             {
-                $content = $response->toArray(false);
+                foreach($content as $error)
+                {
+                    $this->logger->critical($error['code'].': '.$error['message'], [__FILE__.':'.__LINE__]);
+                }
 
                 throw new DomainException(
-                    message: 'Ошибка',
+                    message: 'Ошибка YandexMarketShopRequest',
                     code: $response->getStatusCode()
                 );
             }
@@ -76,7 +82,7 @@ final class YandexMarketShopRequest extends YandexMarket
 
         foreach($content['campaigns'] as $data)
         {
-            yield new YandexMarketShop($this->getProfile(), $data);
+            yield new YandexMarketShopDTO($this->getProfile(), $data);
         }
     }
 }

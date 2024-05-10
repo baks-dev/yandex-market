@@ -1,24 +1,24 @@
 # Роль
 
-ROLE_YANDEX_MARKET_TOKEN:
+ROLE_YA_MARKET_TOKEN:
   name: 'Токены авторизации YandexMarket'
   desc: 'Токены авторизации YandexMarket'
 
 # Правила
 
-ROLE_YANDEX_MARKET_TOKEN_INDEX:
+ROLE_YA_MARKET_TOKEN_INDEX:
   name: 'Просмотр'
   desc: ''
 
-ROLE_YANDEX_MARKET_TOKEN_NEW:
+ROLE_YA_MARKET_TOKEN_NEW:
   name: 'Добавить'
   desc: ''
 
-ROLE_YANDEX_MARKET_TOKEN_EDIT:
+ROLE_YA_MARKET_TOKEN_EDIT:
   name: 'Редактировать'
   desc: ''
 
-ROLE_YANDEX_MARKET_TOKEN_DELETE:
+ROLE_YA_MARKET_TOKEN_DELETE:
   name: 'Удалить'
   desc: ''
 

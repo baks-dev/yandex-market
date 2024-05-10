@@ -40,17 +40,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class YaMarketTokenChoiceRepository implements YaMarketTokenChoiceInterface
 {
-
-    private YaMarketTokenByProfileInterface $wbTokenByProfile;
     private ORMQueryBuilder $ORMQueryBuilder;
 
 
     public function __construct(
-        YaMarketTokenByProfileInterface $wbTokenByProfile,
         ORMQueryBuilder $ORMQueryBuilder
     )
     {
-        $this->wbTokenByProfile = $wbTokenByProfile;
         $this->ORMQueryBuilder = $ORMQueryBuilder;
     }
 
@@ -100,71 +96,5 @@ final class YaMarketTokenChoiceRepository implements YaMarketTokenChoiceInterfac
 
         /* Кешируем результат ORM */
         return $qb->enableCache('yandex-market', 86400)->getResult();
-    }
-
-    /**
-     * Возвращает коллекцию идентификаторов, доступных активному профилю пользователя
-     */
-    public function getAccessProfileTokenCollection(): ?array
-    {
-        $UserProfileUid = $this->wbTokenByProfile->getCurrentUserProfile();
-
-        if(!$UserProfileUid)
-        {
-            return [];
-        }
-
-        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
-
-        $select = sprintf('new %s(token.id, users_profile_personal.username)', UserProfileUid::class);
-        $qb->select($select);
-
-        $qb->from(YaMarketToken::class, 'token');
-
-        $qb->join(
-            YaMarketTokenEvent::class,
-            'event',
-            'WITH',
-            'event.id = token.event',
-        );
-
-        $qb->join(
-            WbTokenAccess::class,
-            'access',
-            'WITH',
-            'access.event = token.event AND access.profile = :access',
-        );
-
-
-        $qb->setParameter('access', $UserProfileUid, UserProfileUid::TYPE);
-
-
-        $qb->join(
-            UserProfileInfo::class,
-            'users_profile_info',
-            'WITH',
-            'users_profile_info.profile = token.id AND users_profile_info.status = :status',
-        );
-
-        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
-
-        $qb->leftJoin(
-            UserProfile::class,
-            'users_profile',
-            'WITH',
-            'users_profile.id = token.id',
-        );
-
-        $qb->leftJoin(
-            UserProfilePersonal::class,
-            'users_profile_personal',
-            'WITH',
-            'users_profile_personal.event = users_profile.event',
-        );
-
-
-        /* Кешируем результат ORM */
-        return $qb->enableCache('yandex-market', 86400)->getResult();
-
     }
 }

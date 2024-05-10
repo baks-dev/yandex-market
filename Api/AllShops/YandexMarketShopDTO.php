@@ -23,28 +23,31 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Yandex\Market\Api\FBY\AllShops;
+namespace BaksDev\Yandex\Market\Api\AllShops;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-final class YandexMarketShop
+final class YandexMarketShopDTO
 {
 
-    /** URL магазина. */
-    private string $domain;
+    private UserProfileUid $profile;
 
-    /** Идентификатор кампании. */
+    /** Название магазина */
+    private string $name;
+
+    /** Идентификатор кампании */
     private int $company;
 
-    /** Идентификатор плательщика в Яндекс Балансе. */
+    /** Идентификатор клиента */
     private int $client;
 
-    /** Информация о кабинете. */
+    /** Идентификатор кабинета */
+    private int $business;
 
-
-    /** Модель, по которой работает магазин:
+    /**
+     * Модель, по которой работает магазин:
      *
      * FBS — FBS или Экспресс;
      * FBY — FBY;
@@ -56,9 +59,59 @@ final class YandexMarketShop
 
     public function __construct(UserProfileUid $profile, array $data)
     {
-
-        dd($data);
-
+        $this->profile = $profile;
+        $this->name = $data['business']['name'];
+        $this->business = $data['business']['id'];
+        $this->company = $data['id'];
+        $this->client = $data['clientId'];
+        $this->type = $data['placementType'];
     }
 
+    /**
+     * Profile
+     */
+    public function getProfile(): UserProfileUid
+    {
+        return $this->profile;
+    }
+
+    /**
+     * Name
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Company
+     */
+    public function getCompany(): int
+    {
+        return $this->company;
+    }
+
+    /**
+     * Client
+     */
+    public function getClient(): int
+    {
+        return $this->client;
+    }
+
+    /**
+     * Business
+     */
+    public function getBusiness(): int
+    {
+        return $this->business;
+    }
+
+    /**
+     * Type
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
 }

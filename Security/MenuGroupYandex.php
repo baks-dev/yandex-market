@@ -35,7 +35,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final class MenuGroupYandex implements MenuAdminSectionGroupCollectionInterface
 {
 
-    public const GROUP = 'Yandex';
+    public const GROUP = 'yandex';
 
     /**
      * Сортировка (чем меньше число - тем первым в итерации будет значение)

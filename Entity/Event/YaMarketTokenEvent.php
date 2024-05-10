@@ -26,8 +26,6 @@ namespace BaksDev\Yandex\Market\Entity\Event;
 
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Yandex\Market\Entity\Access\WbTokenAccess;
-use BaksDev\Yandex\Market\Entity\Cookie\WbTokenCookie;
 use BaksDev\Yandex\Market\Entity\Modify\YaMarketTokenModify;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
 use Doctrine\DBAL\Types\Types;
@@ -65,6 +63,22 @@ class YaMarketTokenEvent extends EntityEvent
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::TEXT)]
     private string $token;
+
+
+    /**
+     * Идентификатор компании
+     */
+    #[Assert\NotBlank]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)] // 85604808
+    private int $company;
+
+
+    /**
+     * Идентификатор кабинета
+     */
+    #[Assert\NotBlank]
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $business;
 
 
     /**

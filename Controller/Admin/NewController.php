@@ -29,8 +29,8 @@ use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenDTO;
-use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\WbTokenForm;
-use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\WbTokenHandler;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenForm;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenHandler;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,18 +38,16 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_WB_TOKEN_NEW')]
+#[RoleSecurity('ROLE_YA_MARKET_TOKEN_NEW')]
 final class NewController extends AbstractController
 {
-
     #[Route('/admin/ya/market/token/new', name: 'admin.newedit.new', methods: ['GET', 'POST'])]
     public function news(
         Request $request,
-        WbTokenHandler $WbTokenHandler,
+        YaMarketTokenHandler $YaMarketTokenHandler,
         LoggerInterface $logger
     ): Response
     {
-
 
         $YaMarketTokenDTO = new YaMarketTokenDTO();
 
@@ -58,25 +56,25 @@ final class NewController extends AbstractController
             $YaMarketTokenDTO->setProfile($this->getAdminFilterProfile());
         }
 
-
         // Форма
-        $form = $this->createForm(WbTokenForm::class, $YaMarketTokenDTO, [
+        $form = $this->createForm(YaMarketTokenForm::class, $YaMarketTokenDTO, [
             'action' => $this->generateUrl('yandex-market:admin.newedit.new'),
         ]);
+
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid() && $form->has('wb_token'))
+        if($form->isSubmitted() && $form->isValid() && $form->has('ya_market_token'))
         {
-            $WbToken = $WbTokenHandler->handle($YaMarketTokenDTO);
+            $YaMarketToken = $YaMarketTokenHandler->handle($YaMarketTokenDTO);
 
-            if($WbToken instanceof YaMarketToken)
+            if($YaMarketToken instanceof YaMarketToken)
             {
                 $this->addFlash('breadcrumb.new', 'success.new', 'yandex-market.admin');
 
                 return $this->redirectToRoute('yandex-market:admin.index');
             }
 
-            $this->addFlash('breadcrumb.new', 'danger.new', 'yandex-market.admin', $WbToken);
+            $this->addFlash('breadcrumb.new', 'danger.new', 'yandex-market.admin', $YaMarketToken);
 
             return $this->redirectToReferer();
         }

@@ -29,5 +29,5 @@ interface AllProfileTokenInterface
     /**
      * Метод возвращает профили пользователей, всех добавленных токенов авторизации
      */
-    public function fetchAllWbTokenProfileAssociative(): ?array;
+    public function findAllProfile(): ?array;
 }

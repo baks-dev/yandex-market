@@ -1,6 +1,6 @@
 {
   "name": "baks-dev/yandex-market",
-  "description": "Модуль YandexMarket Api",
+  "description": "Модуль Yandex Market Api",
   "homepage": "https://github.com/baks-dev/yandex-market",
   "keywords": [
     "symfony",

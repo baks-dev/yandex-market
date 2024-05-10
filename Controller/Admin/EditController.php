@@ -31,8 +31,8 @@ use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenDTO;
-use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\WbTokenForm;
-use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\WbTokenHandler;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenForm;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenHandler;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,51 +40,64 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_WB_TOKEN_EDIT')]
+#[RoleSecurity('ROLE_YA_MARKET_TOKEN_EDIT')]
 final class EditController extends AbstractController
 {
-
     #[Route('/admin/ya/market/token/edit/{id}', name: 'admin.newedit.edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
-        #[MapEntity] YaMarketTokenEvent $WbTokenEvent,
-        WbTokenHandler $WbTokenHandler,
+        #[MapEntity] YaMarketTokenEvent $YaMarketTokenEvent,
+        YaMarketTokenHandler $YaMarketTokenHandler,
     ): Response
     {
-        $WbTokenDTO = new YaMarketTokenDTO();
+
+        $YaMarketTokenDTO = new YaMarketTokenDTO();
+
+        //        dump($YaMarketTokenEvent);
+        //
+        //        dump(''.$this->getProfileUid());
+        //        dump(''.$YaMarketTokenDTO->getProfile());
+        //
+        //        dump($this->getProfileUid()?->equals($YaMarketTokenDTO->getProfile()));
 
         /** Запрещаем редактировать чужой токен */
-        if($this->getAdminFilterProfile() || $this->getAdminFilterProfile()?->equals($WbTokenDTO->getProfile()) === true)
+        if($this->getAdminFilterProfile() === null || $this->getProfileUid()?->equals($YaMarketTokenEvent->getProfile()) === true)
         {
-            $WbTokenEvent->getDto($WbTokenDTO);
+            $YaMarketTokenEvent->getDto($YaMarketTokenDTO);
+        }
+
+        if($request->getMethod() === 'GET')
+        {
+            $YaMarketTokenDTO->hiddenToken();
         }
 
         // Форма
-        $form = $this->createForm(WbTokenForm::class, $WbTokenDTO, [
-            'action' => $this->generateUrl('yandex-market:admin.newedit.edit', ['id' => $WbTokenDTO->getEvent() ?: new YaMarketTokenEventUid()]),
+        $form = $this->createForm(YaMarketTokenForm::class, $YaMarketTokenDTO, [
+            'action' => $this->generateUrl('yandex-market:admin.newedit.edit',
+                ['id' => $YaMarketTokenDTO->getEvent() ?: new YaMarketTokenEventUid()]),
         ]);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid() && $form->has('wb_token'))
+        if($form->isSubmitted() && $form->isValid() && $form->has('ya_market_token'))
         {
             /** Запрещаем редактировать чужой токен */
-            if($this->getAdminFilterProfile() && $this->getAdminFilterProfile()->equals($WbTokenDTO->getProfile()) === false)
+            if($this->getAdminFilterProfile() && $this->getAdminFilterProfile()->equals($YaMarketTokenDTO->getProfile()) === false)
             {
                 $this->addFlash('breadcrumb.edit', 'danger.edit', 'yandex-market.admin', '404');
                 return $this->redirectToReferer();
             }
 
-            $WbToken = $WbTokenHandler->handle($WbTokenDTO);
+            $YaMarketToken = $YaMarketTokenHandler->handle($YaMarketTokenDTO);
 
-            if($WbToken instanceof YaMarketToken)
+            if($YaMarketToken instanceof YaMarketToken)
             {
                 $this->addFlash('breadcrumb.edit', 'success.edit', 'yandex-market.admin');
 
                 return $this->redirectToRoute('yandex-market:admin.index');
             }
 
-            $this->addFlash('breadcrumb.edit', 'danger.edit', 'yandex-market.admin', $WbToken);
+            $this->addFlash('breadcrumb.edit', 'danger.edit', 'yandex-market.admin', $YaMarketToken);
 
             return $this->redirectToReferer();
         }

@@ -28,12 +28,12 @@ namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEventInterface;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
+use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /** @see YaMarketTokenEvent */
 final class YaMarketTokenDTO implements YaMarketTokenEventInterface
 {
-
     /**
      * Идентификатор события
      */
@@ -47,12 +47,23 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
     #[Assert\Uuid]
     private ?UserProfileUid $profile = null;
 
-
     /**
      * Токен
      */
+    private ?string $token = null;
+
+
+    /**
+     * Идентификатор компании
+     */
     #[Assert\NotBlank]
-    private string $token;
+    private int $company;
+
+    /**
+     * Идентификатор кабинета
+     */
+    #[Assert\NotBlank]
+    private int $business;
 
 
     /**
@@ -60,13 +71,6 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
      */
     private bool $active = true;
 
-    private Cookie\WbTokenCookieDTO $cookie;
-
-
-    public function __construct()
-    {
-        $this->cookie = new Cookie\WbTokenCookieDTO();
-    }
 
 
     public function setId(?YaMarketTokenEventUid $id): void
@@ -98,17 +102,52 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
     /**
      * Token
      */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
 
-
-    public function setToken(string $token): void
+    public function setToken(?string $token): void
     {
-        $this->token = $token;
+        if(!empty($token))
+        {
+            $this->token = $token;
+        }
     }
 
+    public function hiddenToken(): void
+    {
+        $this->token = null;
+    }
+
+
+    /**
+     * Business
+     */
+    public function getBusiness(): int
+    {
+        return $this->business;
+    }
+
+    public function setBusiness(int $business): self
+    {
+        $this->business = $business;
+        return $this;
+    }
+
+    /**
+     * Company
+     */
+    public function getCompany(): int
+    {
+        return $this->company;
+    }
+
+    public function setCompany(int $company): self
+    {
+        $this->company = $company;
+        return $this;
+    }
 
     /**
      * Active
@@ -123,20 +162,4 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
     {
         $this->active = $active;
     }
-
-
-    /**
-     * Cookie
-     */
-    public function getCookie(): Cookie\WbTokenCookieDTO
-    {
-        return $this->cookie;
-    }
-
-
-    public function setCookie(Cookie\WbTokenCookieDTO $cookie): void
-    {
-        $this->cookie = $cookie;
-    }
-
 }

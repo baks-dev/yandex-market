@@ -192,7 +192,7 @@ final class AllYaMarketTokenRepository implements AllYaMarketTokenInterface
         if($this->search?->getQuery())
         {
             $qb
-                ->createSearchQueryBuilder($search)
+                ->createSearchQueryBuilder($this->search)
                 ->addSearchEqualUid('token.id')
                 ->addSearchEqualUid('token.event')
                 ->addSearchLike('account_event.email')

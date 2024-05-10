@@ -23,51 +23,33 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Cookie;
+namespace BaksDev\Yandex\Market\UseCase\Admin\Delete;
 
-use BaksDev\Yandex\Market\Entity\Cookie\WbTokenCookieInterface;
 
-/** @see WbTokenCookie */
-final class WbTokenCookieDTO implements WbTokenCookieInterface
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+final class YaMarketTokenDeleteForm extends AbstractType
 {
 
-    /**
-     * Токен (WBToken)
-     */
-    private ?string $token = null;
-
-    /**
-     * Идентификатор магазина (x-supplier-id)
-     */
-    private ?string $identifier = null;
-
-
-    /**
-     * Token
-     */
-    public function getToken(): ?string
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        return $this->token;
+        /* Сохранить ******************************************************/
+        $builder->add(
+            'ya_market_token_delete',
+            SubmitType::class,
+            ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-danger']]
+        );
     }
 
-
-    public function setToken(?string $token): void
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $this->token = $token;
-    }
-
-
-    /**
-     * Идентификатор магазина
-     */
-    public function getIdentifier(): ?string
-    {
-        return $this->identifier;
-    }
-
-
-    public function setIdentifier(?string $identifier): void
-    {
-        $this->identifier = $identifier;
+        $resolver->setDefaults([
+            'data_class' => YaMarketTokenDeleteDTO::class,
+            'method' => 'POST',
+            'attr' => ['class' => 'w-100'],
+        ]);
     }
 }

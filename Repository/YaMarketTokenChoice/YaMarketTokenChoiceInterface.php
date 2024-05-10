@@ -30,8 +30,4 @@ interface YaMarketTokenChoiceInterface
      */
     public function getTokenCollection(): ?array;
 
-    /**
-     * Возвращает коллекцию идентификаторов, доступных активному профилю пользователя
-     */
-    public function getAccessProfileTokenCollection(): ?array;
 }

@@ -36,7 +36,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final class Role implements RoleInterface, MenuAdminInterface
 {
     /** Транспорт доставки заказов */
-    public const ROLE = 'ROLE_YANDEX_MARKET_TOKEN';
+    public const ROLE = 'ROLE_YA_MARKET_TOKEN';
 
     public function getRole(): string
     {
@@ -59,7 +59,7 @@ final class Role implements RoleInterface, MenuAdminInterface
      */
     public function getGroupMenu(): MenuAdminSectionGroupCollectionInterface|bool
     {
-        return new MenuGroupSettings();
+        return new MenuGroupYandex();
     }
 
     /**

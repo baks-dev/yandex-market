@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace BaksDev\Yandex\Market\Messenger;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Yandex\Market\Type\Event\WbTokenEventUid;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
 
 final class YaMarketTokenMessage

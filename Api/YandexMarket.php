@@ -40,9 +40,13 @@ abstract class YandexMarket
 {
 
     protected LoggerInterface $logger;
+
     protected ?UserProfileUid $profile = null;
+
     private ?YaMarketAuthorizationToken $AuthorizationToken = null;
+
     private YaMarketTokenByProfileInterface $TokenByProfile;
+
     private array $headers;
 
     public function __construct(
@@ -55,9 +59,16 @@ abstract class YandexMarket
     }
 
 
-    public function profile(UserProfileUid $profile): self
+    public function profile(UserProfileUid|string $profile): self
     {
+        if(is_string($profile))
+        {
+            $profile = new UserProfileUid($profile);
+        }
+
         $this->profile = $profile;
+
+        $this->AuthorizationToken = $this->TokenByProfile->getToken($this->profile);
 
         return $this;
     }
@@ -85,11 +96,11 @@ abstract class YandexMarket
 
             if(!$this->AuthorizationToken)
             {
-                throw new DomainException(sprintf('Токен авторизации Wildberries не найден: %s', $this->profile));
+                throw new DomainException(sprintf('Токен авторизации Yandex Market не найден: %s', $this->profile));
             }
         }
 
-        $this->headers = ['Authorization' => $this->AuthorizationToken->getToken()];
+        $this->headers = ['Authorization' => 'Bearer '.$this->AuthorizationToken->getToken()];
 
         return new RetryableHttpClient(
             HttpClient::create(['headers' => $this->headers])
@@ -103,9 +114,19 @@ abstract class YandexMarket
     /**
      * Profile
      */
-    public function getProfile(): ?UserProfileUid
+    protected function getProfile(): ?UserProfileUid
     {
         return $this->profile;
+    }
+
+    protected function getBusiness(): int
+    {
+        return $this->AuthorizationToken->getBusiness();
+    }
+
+    protected function getCompany(): int
+    {
+        return $this->AuthorizationToken->getCompany();
     }
 
     protected function getCurlHeader(): string

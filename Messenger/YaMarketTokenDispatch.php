@@ -25,10 +25,15 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\Messenger;
 
+use BaksDev\Yandex\Market\Api\AllShops\YandexMarketShopRequest;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(priority: 100)]
 final class YaMarketTokenDispatch
 {
+    public function __construct(YandexMarketShopRequest $yandexMarketShopRequest) {}
+
     public function __invoke(YaMarketTokenMessage $message): void {}
+
+
 }

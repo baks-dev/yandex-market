@@ -29,9 +29,9 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class EditControllerTest extends WebTestCase
 {
-    private const URL = '/admin/wb/token/edit/%s';
+    private const URL = '/admin/ya/market/token/edit/%s';
 
-    private const ROLE = 'ROLE_WB_TOKEN_EDIT';
+    private const ROLE = 'ROLE_YA_MARKET_TOKEN_EDIT';
 
 
     private static ?YaMarketTokenEventUid $identifier = null;

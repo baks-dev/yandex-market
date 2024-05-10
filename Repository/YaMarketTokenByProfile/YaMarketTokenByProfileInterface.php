@@ -24,20 +24,13 @@
 namespace BaksDev\Yandex\Market\Repository\YaMarketTokenByProfile;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Yandex\Market\Type\Authorization\WbAuthorizationCookie;
 use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
 
 interface YaMarketTokenByProfileInterface
 {
-
     /**
      * Токен авторизации
      */
     public function getToken(UserProfileUid $profile): ?YaMarketAuthorizationToken;
-
-    /**
-     * Текущий Активный профиль пользователя
-     */
-    public function getCurrentUserProfile(): ?UserProfileUid;
 
 }

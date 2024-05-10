@@ -40,7 +40,7 @@ use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/* Модификаторы событий WbTokenModify */
+/* Модификаторы событий YaMarketTokenModify */
 
 #[ORM\Entity]
 #[ORM\Table(name: 'ya_market_token_modify')]

@@ -29,7 +29,7 @@ use Symfony\Config\DoctrineConfig;
 
 return static function(DoctrineConfig $doctrine, ContainerConfigurator $configurator): void {
 
-    //$doctrine->dbal()->type(WbTokenEventUid::TYPE)->class(WbTokenEventType::class);
+    $doctrine->dbal()->type(YaMarketTokenEventUid::TYPE)->class(YaMarketTokenEventType::class);
 
     $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
 

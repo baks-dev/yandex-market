@@ -48,9 +48,9 @@ final class AllProfileTokenRepository implements AllProfileTokenInterface
 
 
     /**
-     * Метод возвращает профили пользователей, добавленных токенов авторизации
+     * Метод возвращает профили пользователей, всех добавленных токенов
      */
-    public function fetchAllWbTokenProfileAssociative(): ?array
+    public function findAllProfile(): ?array
     {
         $qb = $this->entityManager->createQueryBuilder();
 

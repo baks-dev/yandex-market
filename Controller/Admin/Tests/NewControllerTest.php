@@ -26,9 +26,9 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class NewControllerTest extends WebTestCase
 {
-    private const URL = '/admin/wb/token/new';
+    private const URL = '/admin/ya/market/token/new';
 
-    private const ROLE = 'ROLE_WB_TOKEN_NEW';
+    private const ROLE = 'ROLE_YA_MARKET_TOKEN_NEW';
 
     /** Доступ по роли  */
     public function testRoleSuccessful(): void

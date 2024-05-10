@@ -23,9 +23,10 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit;
+namespace BaksDev\Yandex\Market\UseCase\Admin\Delete;
 
 use BaksDev\Core\Messenger\MessageDispatchInterface;
+use BaksDev\Users\UsersTable\Entity\Actions\Event\UsersTableActionsEvent;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Messenger\YaMarketTokenMessage;
@@ -33,7 +34,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-final class WbTokenHandler
+final class YaMarketTokenDeleteHandler
 {
 
     private EntityManagerInterface $entityManager;
@@ -60,13 +61,13 @@ final class WbTokenHandler
     }
 
 
-    /** @see YaMarketToken */
+    /** @see UsersTableActionsDelete */
     public function handle(
-        YaMarketTokenDTO $command,
+        YaMarketTokenDeleteDTO $command,
     ): string|YaMarketToken
     {
         /**
-         *  Валидация DTO
+         *  Валидация UsersTableActionsDeleteDTO
          */
         $errors = $this->validator->validate($command);
 
@@ -79,84 +80,59 @@ final class WbTokenHandler
             return $uniqid;
         }
 
-        if($command->getEvent())
+        /* Обязательно передается идентификатор события */
+        if($command->getEvent() === null)
         {
-            $EventRepo = $this->entityManager->getRepository(YaMarketTokenEvent::class)
-                ->find(
-                    $command->getEvent(),
-                );
+            $uniqid = uniqid('', false);
+            $errorsString = sprintf(
+                'Not found event id in class: %s',
+                $command::class,
+            );
+            $this->logger->error($uniqid.': '.$errorsString);
 
-            if($EventRepo === null)
-            {
-                $uniqid = uniqid('', false);
-                $errorsString = sprintf(
-                    'Not found %s by id: %s',
-                    YaMarketTokenEvent::class,
-                    $command->getEvent(),
-                );
-                $this->logger->error($uniqid.': '.$errorsString);
-
-                return $uniqid;
-            }
-
-            $EventRepo->setEntity($command);
-            $EventRepo->setEntityManager($this->entityManager);
-            $Event = $EventRepo->cloneEntity();
-        }
-        else
-        {
-            $Event = new YaMarketTokenEvent();
-            $Event->setEntity($command);
-            $this->entityManager->persist($Event);
+            return $uniqid;
         }
 
-        //        $this->entityManager->clear();
-        //        $this->entityManager->persist($Event);
+        /** Получаем событие */
+        $Event = $this->entityManager->getRepository(YaMarketTokenEvent::class)
+            ->find($command->getEvent());
 
+        if($Event === null)
+        {
+            $uniqid = uniqid('', false);
+            $errorsString = sprintf(
+                'Not found %s by id: %s',
+                UsersTableActionsEvent::class,
+                $command->getEvent(),
+            );
+            $this->logger->error($uniqid.': '.$errorsString);
 
-        /** @var YaMarketToken $Main */
+            return $uniqid;
+        }
+
+        /** Получаем корень агрегата */
         $Main = $this->entityManager->getRepository(YaMarketToken::class)
-            ->find($command->getProfile());
+            ->findOneBy(['event' => $command->getEvent()]);
 
         if(empty($Main))
         {
-            $Main = new YaMarketToken($command->getProfile());
-            $this->entityManager->persist($Main);
-        }
-
-        /* присваиваем событие корню */
-        $Main->setEvent($Event);
-
-
-        /**
-         * Валидация Event
-         */
-
-        $errors = $this->validator->validate($Event);
-
-        if(count($errors) > 0)
-        {
-            /** Ошибка валидации */
             $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
+            $errorsString = sprintf(
+                'Not found %s by event: %s',
+                YaMarketToken::class,
+                $command->getEvent(),
+            );
+            $this->logger->error($uniqid.': '.$errorsString);
 
             return $uniqid;
         }
 
-        /**
-         * Валидация Main
-         */
-        $errors = $this->validator->validate($Main);
+        /** Применяем изменения к событию */
+        $Event->setEntity($command);
+        $this->entityManager->persist($Event);
 
-        if(count($errors) > 0)
-        {
-            /** Ошибка валидации */
-            $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
-
-            return $uniqid;
-        }
-
+        /* Удаляем корень агрегата */
+        $this->entityManager->remove($Main);
 
         $this->entityManager->flush();
 
@@ -167,5 +143,6 @@ final class WbTokenHandler
         );
 
         return $Main;
+
     }
 }

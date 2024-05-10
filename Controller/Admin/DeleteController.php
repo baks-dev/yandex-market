@@ -30,8 +30,8 @@ use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\UseCase\Admin\Delete\YaMarketTokenDeleteDTO;
-use BaksDev\Yandex\Market\UseCase\Admin\Delete\WbTokenDeleteForm;
-use BaksDev\Yandex\Market\UseCase\Admin\Delete\WbTokenDeleteHandler;
+use BaksDev\Yandex\Market\UseCase\Admin\Delete\YaMarketTokenDeleteForm;
+use BaksDev\Yandex\Market\UseCase\Admin\Delete\YaMarketTokenDeleteHandler;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,30 +39,30 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_WB_TOKEN_DELETE')]
+#[RoleSecurity('ROLE_YA_MARKET_TOKEN_DELETE')]
 final class DeleteController extends AbstractController
 {
 
     #[Route('/admin/ya/market/token/delete/{id}', name: 'admin.delete', methods: ['GET', 'POST'])]
     public function delete(
         Request $request,
-        #[MapEntity] YaMarketTokenEvent $WbTokenEvent,
-        WbTokenDeleteHandler $WbTokenDeleteHandler,
+        #[MapEntity] YaMarketTokenEvent $YaMarketTokenEvent,
+        YaMarketTokenDeleteHandler $YaMarketTokenDeleteHandler,
     ): Response
     {
 
-        $WbTokenDeleteDTO = new YaMarketTokenDeleteDTO();
-        $WbTokenEvent->getDto($WbTokenDeleteDTO);
-        $form = $this->createForm(WbTokenDeleteForm::class, $WbTokenDeleteDTO, [
-            'action' => $this->generateUrl('yandex-market:admin.delete', ['id' => $WbTokenDeleteDTO->getEvent()]),
+        $YaMarketTokenDeleteDTO = new YaMarketTokenDeleteDTO();
+        $YaMarketTokenEvent->getDto($YaMarketTokenDeleteDTO);
+        $form = $this->createForm(YaMarketTokenDeleteForm::class, $YaMarketTokenDeleteDTO, [
+            'action' => $this->generateUrl('yandex-market:admin.delete', ['id' => $YaMarketTokenDeleteDTO->getEvent()]),
         ]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid() && $form->has('wb_token_delete'))
+        if($form->isSubmitted() && $form->isValid() && $form->has('ya_market_token_delete'))
         {
-            $WbToken = $WbTokenDeleteHandler->handle($WbTokenDeleteDTO);
+            $YaMarketToken = $YaMarketTokenDeleteHandler->handle($YaMarketTokenDeleteDTO);
 
-            if($WbToken instanceof YaMarketToken)
+            if($YaMarketToken instanceof YaMarketToken)
             {
                 $this->addFlash('breadcrumb.delete', 'success.delete', 'yandex-market.admin');
 
@@ -73,7 +73,7 @@ final class DeleteController extends AbstractController
                 'breadcrumb.delete',
                 'danger.delete',
                 'yandex-market.admin',
-                $WbToken,
+                $YaMarketToken,
             );
 
             return $this->redirectToRoute('yandex-market:admin.index', status: 400);

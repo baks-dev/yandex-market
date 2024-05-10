@@ -27,7 +27,7 @@ namespace BaksDev\Yandex\Market\Type\Authorization;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
-/** @see WbTokenCookie */
+
 final class YaMarketAuthorizationToken
 {
 
@@ -41,11 +41,34 @@ final class YaMarketAuthorizationToken
      */
     private readonly string $token;
 
+    /**
+     * Идентификатор компании
+     */
+    private readonly int $company;
 
-    public function __construct(UserProfileUid $profile, string $token)
+
+    /**
+     * Идентификатор кабинета
+     */
+    private readonly int $business;
+
+
+    public function __construct(
+        UserProfileUid|string $profile,
+        string $token,
+        int|string $company,
+        int|string $business
+    )
     {
+        if(is_string($profile))
+        {
+            $profile = new UserProfileUid($profile);
+        }
+
         $this->profile = $profile;
         $this->token = $token;
+        $this->company = (int) $company;
+        $this->business = (int) $business;
     }
 
 
@@ -59,5 +82,16 @@ final class YaMarketAuthorizationToken
     {
         return $this->token;
     }
+
+    public function getCompany(): int
+    {
+        return $this->company;
+    }
+
+    public function getBusiness(): int
+    {
+        return $this->business;
+    }
+
 
 }

@@ -30,12 +30,13 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class WbTokenForm extends AbstractType
+final class YaMarketTokenForm extends AbstractType
 {
 
     private UserProfileChoiceInterface $profileChoice;
@@ -71,17 +72,18 @@ final class WbTokenForm extends AbstractType
             ]);
         }
 
+        $builder->add('token', TextareaType::class, ['required' => false]);
 
-        $builder->add('token', TextareaType::class);
+        $builder->add('company', NumberType::class);
+
+        $builder->add('business', NumberType::class);
 
         $builder->add('active', CheckboxType::class, ['required' => false]);
-
-        $builder->add('cookie', Cookie\WbTokenCookieForm::class, ['label' => false]);
 
 
         /* Сохранить ******************************************************/
         $builder->add(
-            'wb_token', SubmitType::class,
+            'ya_market_token', SubmitType::class,
             ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-primary']]
         );
     }

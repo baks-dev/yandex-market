@@ -36,7 +36,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_WB_TOKEN')]
+#[RoleSecurity('ROLE_YA_MARKET_TOKEN_INDEX')]
 final class IndexController extends AbstractController
 {
     #[Route('/admin/ya/market/tokens/{page<\d+>}', name: 'admin.index', methods: ['GET', 'POST'])]
@@ -52,8 +52,8 @@ final class IndexController extends AbstractController
         $searchForm = $this->createForm(SearchForm::class, $search,
             ['action' => $this->generateUrl('yandex-market:admin.index')]
         );
-        $searchForm->handleRequest($request);
 
+        $searchForm->handleRequest($request);
 
         $this->getAdminFilterProfile() ? $paginator->profile($this->getAdminFilterProfile()) : null;
 

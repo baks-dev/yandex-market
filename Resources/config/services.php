@@ -30,7 +30,7 @@ return static function(ContainerConfigurator $configurator) {
         ->autowire()
         ->autoconfigure();
 
-    $NAMESPACE = 'BaksDev\yandex\Market\\';
+    $NAMESPACE = 'BaksDev\Yandex\Market\\';
 
     $MODULE = substr(__DIR__, 0, strpos(__DIR__, "Resources"));
 

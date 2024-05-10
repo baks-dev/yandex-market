@@ -29,10 +29,9 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class DeleteControllerTest extends WebTestCase
 {
-    private const URL = '/admin/wb/token/delete/%s';
+    private const URL = '/admin/ya/market/token/delete/%s';
 
-    private const ROLE = 'ROLE_WB_TOKEN_DELETE';
-
+    private const ROLE = 'ROLE_YA_MARKET_TOKEN_DELETE';
 
     private static ?YaMarketTokenEventUid $identifier = null;
 

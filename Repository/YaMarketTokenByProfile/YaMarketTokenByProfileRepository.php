@@ -26,6 +26,7 @@ namespace BaksDev\Yandex\Market\Repository\YaMarketTokenByProfile;
 
 use BaksDev\Auth\Email\Type\EmailStatus\EmailStatus;
 use BaksDev\Auth\Email\Type\EmailStatus\Status\EmailStatusActive;
+use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
@@ -42,58 +43,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 final class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileInterface
 {
 
-    private TokenStorageInterface $tokenStorage;
+    private DBALQueryBuilder $DBALQueryBuilder;
 
-    private ORMQueryBuilder $ORMQueryBuilder;
-
-    public function __construct(
-        ORMQueryBuilder $ORMQueryBuilder,
-        TokenStorageInterface $tokenStorage,
-    )
+    public function __construct(DBALQueryBuilder $DBALQueryBuilder)
     {
-        $this->tokenStorage = $tokenStorage;
-        $this->ORMQueryBuilder = $ORMQueryBuilder;
-    }
-
-    /**
-     * Текущий Активный профиль пользователя любой
-     */
-    public function getCurrentUserProfile(): ?UserProfileUid
-    {
-        /** @var UserUid $usr */
-        $usr = $this->tokenStorage->getToken()
-            ?->getUser()
-            ?->getId();
-
-        if(!$usr)
-        {
-            throw new InvalidArgumentException('Невозможно определить авторизованного пользователя');
-        }
-
-        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
-
-        $select = sprintf('new %s(profile.id)', UserProfileUid::class);
-        $qb->select($select);
-
-        $qb->from(UserProfileInfo::class, 'profile_info');
-        $qb->where('profile_info.usr = :user');
-
-        $qb->andWhere('profile_info.active = true');
-        $qb->andWhere('profile_info.status = :status');
-
-        $qb->setParameter('user', $usr, UserUid::TYPE);
-        $qb->setParameter('status', new EmailStatus(EmailStatusActive::class), EmailStatus::TYPE);
-
-        $qb->join(
-            UserProfile::class,
-            'profile',
-            'WITH',
-            'profile.id = profile_info.profile',
-        );
-
-        /* Кешируем результат ORM */
-        return $qb->enableCache('yandex-market', 86400)->getOneOrNullResult();
-
+        $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
 
     /**
@@ -101,10 +55,7 @@ final class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileIn
      */
     public function getToken(UserProfileUid $profile): ?YaMarketAuthorizationToken
     {
-        $qb = $this->ORMQueryBuilder->createQueryBuilder(self::class);
-
-        $select = sprintf('new %s(token.id, event.token)', YaMarketAuthorizationToken::class);
-        $qb->select($select);
+        $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
         $qb
             ->from(YaMarketToken::class, 'token')
@@ -112,25 +63,30 @@ final class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileIn
             ->setParameter('profile', $profile, UserProfileUid::TYPE);
 
         $qb->join(
+            'token',
             YaMarketTokenEvent::class,
             'event',
-            'WITH',
             'event.id = token.event AND event.active = true',
         );
 
         $qb->join(
-
+            'token',
             UserProfileInfo::class,
             'info',
-            'WITH',
             'info.profile = token.id AND info.status = :status',
         );
 
         $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
+        $qb->select('token.id AS profile');
+        $qb->addSelect('event.token AS token');
+        $qb->addSelect('event.company AS company');
+        $qb->addSelect('event.business AS business');
 
         /* Кешируем результат ORM */
-        return $qb->enableCache('yandex-market', 86400)->getOneOrNullResult();
+        return $qb
+            ->enableCache('yandex-market', 86400)
+            ->fetchHydrate(YaMarketAuthorizationToken::class);
 
     }
 
