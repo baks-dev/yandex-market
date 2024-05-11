@@ -132,7 +132,7 @@ abstract class YandexMarket
     protected function getCurlHeader(): string
     {
         $this->headers['accept'] = 'application/json';
-        $this->headers['Content-Type'] = 'application/json';
+        $this->headers['Content-Type'] = 'application/json; charset=utf-8';
 
         return '-H "'.implode('" -H "', array_map(
                 function($key, $value) {
