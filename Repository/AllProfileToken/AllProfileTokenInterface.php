@@ -23,11 +23,14 @@
 
 namespace BaksDev\Yandex\Market\Repository\AllProfileToken;
 
+use Generator;
+
 interface AllProfileTokenInterface
 {
+    public function onlyActiveToken(): self;
 
     /**
      * Метод возвращает профили пользователей, всех добавленных токенов авторизации
      */
-    public function findAllProfile(): ?array;
+    public function findAll(): Generator;
 }

@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\Repository\AllProfileToken;
 
+use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
@@ -33,64 +34,79 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileS
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
-use Doctrine\ORM\EntityManagerInterface;
+use Generator;
 
 final class AllProfileTokenRepository implements AllProfileTokenInterface
 {
 
-    private EntityManagerInterface $entityManager;
+    private DBALQueryBuilder $DBALQueryBuilder;
 
+    private bool $active;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(DBALQueryBuilder $DBALQueryBuilder)
     {
-        $this->entityManager = $entityManager;
+        $this->DBALQueryBuilder = $DBALQueryBuilder;
     }
 
+    public function onlyActiveToken(): self
+    {
+        $this->active = true;
+        return $this;
+    }
 
     /**
      * Метод возвращает профили пользователей, всех добавленных токенов
      */
-    public function findAllProfile(): ?array
+    public function findAll(): Generator
     {
-        $qb = $this->entityManager->createQueryBuilder();
+        $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
-        $select = sprintf('new %s(token.id, personal.username)', UserProfileUid::class);
-        $qb->select($select);
+        $dbal->from(YaMarketToken::class, 'token');
 
-        $qb->from(YaMarketToken::class, 'token');
+        if($this->active)
+        {
+            $dbal->join(
+                'token',
+                YaMarketTokenEvent::class,
+                'event',
+                'event.id = token.event AND event.active = true',
+            );
+        }
 
-        $qb->join(
-            YaMarketTokenEvent::class,
-            'event',
-            'WITH',
-            'event.id = token.event AND event.profile = token.id AND event.active = true',
-        );
+        $dbal
+            ->join(
+                'token',
+                UserProfileInfo::class,
+                'users_profile_info',
+                'users_profile_info.profile = token.id AND users_profile_info.status = :status',
+            )
+            ->setParameter(
+                'status',
+                UserProfileStatusActive::class,
+                UserProfileStatus::TYPE
+            );
 
-        $qb->join(
-            UserProfileInfo::class,
+        $dbal->join(
             'users_profile_info',
-            'WITH',
-            'users_profile_info.profile = token.id AND users_profile_info.status = :status',
-        );
-
-        $qb->join(
             UserProfile::class,
             'users_profile',
-            'WITH',
-            'users_profile.id = token.id',
+            'users_profile.id = users_profile_info.profile',
         );
 
 
-        $qb->leftJoin(
+        $dbal->leftJoin(
+            'users_profile',
             UserProfilePersonal::class,
             'personal',
-            'WITH',
             'personal.event = users_profile.event',
         );
 
 
-        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+        /** Параметры конструктора объекта гидрации */
+        $dbal->addSelect('token.id AS value');
+        $dbal->addSelect('personal.username AS attr');
 
-        return $qb->getQuery()->getResult();
+        return $dbal->fetchAllHydrate(UserProfileUid::class);
+
     }
 }
