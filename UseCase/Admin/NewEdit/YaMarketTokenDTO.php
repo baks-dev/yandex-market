@@ -31,7 +31,7 @@ use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/** @see YaMarketTokenEvent */
+/** @see MegamarketTokenEvent */
 final class YaMarketTokenDTO implements YaMarketTokenEventInterface
 {
     /**

@@ -28,35 +28,28 @@ namespace BaksDev\Yandex\Market\Security;
 use BaksDev\Menu\Admin\Command\Upgrade\MenuAdminInterface;
 use BaksDev\Menu\Admin\Type\SectionGroup\Group\Collection\MenuAdminSectionGroupCollectionInterface;
 use BaksDev\Menu\Admin\Type\SectionGroup\Group\MenuGroupSettings;
-use BaksDev\Orders\Order\Security\MenuGroupMarketplace;
-use BaksDev\Users\Profile\Group\Security\RoleInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-#[AutoconfigureTag('baks.security.role')]
 #[AutoconfigureTag('baks.menu.admin')]
-final class Role implements RoleInterface, MenuAdminInterface
+final class Header implements MenuAdminInterface
 {
-    /** Транспорт доставки заказов */
-    public const ROLE = 'ROLE_YA_MARKET_TOKEN';
 
     public function getRole(): string
     {
-        return self::ROLE;
+        return Role::ROLE;
     }
 
-
     /**
-     * Добавляем раздел в меню администрирования.
+     * Добавляем заголовок в меню администрирования.
      */
 
-    /** Метод возвращает PATH раздела */
-    public function getPath(): string
+    public function getPath(): ?string
     {
-        return 'yandex-market:admin.index';
+        return null;
     }
 
     /**
-     * Метод возвращает секцию, в которую помещается ссылка на раздел.
+     * Метод возвращает секцию, в которую помещается ссылка на раздел
      */
     public function getGroupMenu(): MenuAdminSectionGroupCollectionInterface|bool
     {
@@ -64,20 +57,21 @@ final class Role implements RoleInterface, MenuAdminInterface
     }
 
     /**
-     * Метод возвращает позицию, в которую располагается ссылка в секции меню.
+     * Метод возвращает позицию, в которую располагается ссылка в секции меню
      */
     public function getSortMenu(): int
     {
-        return 201;
+        return 200;
     }
 
     /**
-     * Метод возвращает флаг "Показать в выпадающем меню".
+     * Метод возвращает флаг "Показать в выпадающем меню"
      */
     public function getDropdownMenu(): bool
     {
         return true;
     }
+
 
     /**
      * Метод возвращает флаг "Модальное окно".

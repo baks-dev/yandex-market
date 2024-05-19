@@ -1,6 +1,7 @@
 # Роль
 
 ROLE_YA_MARKET_TOKEN:
+  header: 'Yandex Market'
   name: 'Токены авторизации YandexMarket'
   desc: 'Токены авторизации YandexMarket'
 
