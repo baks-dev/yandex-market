@@ -65,6 +65,8 @@ final class NewController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid() && $form->has('ya_market_token'))
         {
+            $this->refreshTokenForm($form);
+
             $YaMarketToken = $YaMarketTokenHandler->handle($YaMarketTokenDTO);
 
             if($YaMarketToken instanceof YaMarketToken)

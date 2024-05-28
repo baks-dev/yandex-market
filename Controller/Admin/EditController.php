@@ -81,6 +81,8 @@ final class EditController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid() && $form->has('ya_market_token'))
         {
+            $this->refreshTokenForm($form);
+
             /** Запрещаем редактировать чужой токен */
             if($this->getAdminFilterProfile() && $this->getAdminFilterProfile()->equals($YaMarketTokenDTO->getProfile()) === false)
             {
