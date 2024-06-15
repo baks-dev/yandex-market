@@ -31,8 +31,8 @@ return static function(FrameworkConfig $framework) {
     $messenger = $framework->messenger();
 
     $messenger->transport('yandex-market')
-        ->dsn('%env(MESSENGER_TRANSPORT_DSN)%')
-        ->options(['queue_name' => 'yandex-market'])
+        ->dsn('redis://%env(REDIS_PASSWORD)%@%env(REDIS_HOST)%:%env(REDIS_PORT)%?auto_setup=true')
+        ->options(['stream' => 'yandex-market'])
         ->failureTransport('failed-yandex-market')
         ->retryStrategy()
         ->maxRetries(3)
@@ -41,7 +41,9 @@ return static function(FrameworkConfig $framework) {
         ->multiplier(3) // увеличиваем задержку перед каждой повторной попыткой
         ->service(null);
 
-    $messenger->transport('failed-yandex-market')
+    $failure = $framework->messenger();
+
+    $failure->transport('failed-yandex-market')
         ->dsn('%env(MESSENGER_TRANSPORT_DSN)%')
         ->options(['queue_name' => 'failed-yandex-market']);
 

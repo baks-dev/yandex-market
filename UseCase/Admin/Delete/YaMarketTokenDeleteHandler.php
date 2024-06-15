@@ -49,13 +49,13 @@ final class YaMarketTokenDeleteHandler
     public function __construct(
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
-        LoggerInterface $logger,
+        LoggerInterface $yandexMarketLogger,
         MessageDispatchInterface $messageDispatch,
     )
     {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
-        $this->logger = $logger;
+        $this->logger = $yandexMarketLogger;
         $this->messageDispatch = $messageDispatch;
 
     }

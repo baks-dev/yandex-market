@@ -51,11 +51,11 @@ abstract class YandexMarket
 
     public function __construct(
         YaMarketTokenByProfileInterface $TokenByProfile,
-        LoggerInterface $WildberriesLogger,
+        LoggerInterface $yandexMarketLogger,
     )
     {
         $this->TokenByProfile = $TokenByProfile;
-        $this->logger = $WildberriesLogger;
+        $this->logger = $yandexMarketLogger;
     }
 
 

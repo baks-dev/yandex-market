@@ -45,7 +45,7 @@ final class NewController extends AbstractController
     public function news(
         Request $request,
         YaMarketTokenHandler $YaMarketTokenHandler,
-        LoggerInterface $logger
+        LoggerInterface $yandexMarketLogger
     ): Response
     {
 

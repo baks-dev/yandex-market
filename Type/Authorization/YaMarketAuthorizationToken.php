@@ -27,7 +27,6 @@ namespace BaksDev\Yandex\Market\Type\Authorization;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
-
 final class YaMarketAuthorizationToken
 {
 
