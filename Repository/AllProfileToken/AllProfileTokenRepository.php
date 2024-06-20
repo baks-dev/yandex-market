@@ -38,7 +38,6 @@ use Generator;
 
 final class AllProfileTokenRepository implements AllProfileTokenInterface
 {
-
     private DBALQueryBuilder $DBALQueryBuilder;
 
     private bool $active;
