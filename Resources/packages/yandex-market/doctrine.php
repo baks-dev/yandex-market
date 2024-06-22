@@ -34,7 +34,6 @@ return static function(DoctrineConfig $doctrine, ContainerConfigurator $configur
 
     $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
 
-
     $emDefault
         ->mapping('yandex-market')
         ->type('attribute')
