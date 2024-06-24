@@ -38,7 +38,6 @@ use Symfony\Component\HttpClient\RetryableHttpClient;
 
 abstract class YandexMarket
 {
-
     protected LoggerInterface $logger;
 
     protected ?UserProfileUid $profile = null;
