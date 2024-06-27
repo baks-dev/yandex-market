@@ -112,12 +112,8 @@ class YaMarketTokenEvent extends EntityEvent
 
     public function setMain(YaMarketToken|UserProfileUid $profile): self
     {
-        if($profile instanceof YaMarketToken)
-        {
-            $profile = $profile->getId();
-        }
+        $this->profile = $profile instanceof YaMarketToken ? $profile->getId() : $profile;
 
-        $this->profile = $profile;
         return $this;
     }
 
