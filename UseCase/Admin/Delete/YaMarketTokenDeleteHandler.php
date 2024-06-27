@@ -25,124 +25,45 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\UseCase\Admin\Delete;
 
-use BaksDev\Core\Messenger\MessageDispatchInterface;
-use BaksDev\Users\UsersTable\Entity\Actions\Event\UsersTableActionsEvent;
+use BaksDev\Core\Entity\AbstractHandler;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Messenger\YaMarketTokenMessage;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use DomainException;
 
-final class YaMarketTokenDeleteHandler
+final class YaMarketTokenDeleteHandler extends AbstractHandler
 {
-
-    private EntityManagerInterface $entityManager;
-
-    private ValidatorInterface $validator;
-
-    private LoggerInterface $logger;
-
-    private MessageDispatchInterface $messageDispatch;
-
-
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        ValidatorInterface $validator,
-        LoggerInterface $yandexMarketLogger,
-        MessageDispatchInterface $messageDispatch,
-    )
+    public function handle(YaMarketTokenDeleteDTO $command): string|YaMarketToken
     {
-        $this->entityManager = $entityManager;
-        $this->validator = $validator;
-        $this->logger = $yandexMarketLogger;
-        $this->messageDispatch = $messageDispatch;
+        /* Валидация DTO  */
+        $this->validatorCollection->add($command);
 
-    }
+        $this->main = new YaMarketToken($command->getProfile());
+        $this->event = new YaMarketTokenEvent();
 
-
-    /** @see UsersTableActionsDelete */
-    public function handle(
-        YaMarketTokenDeleteDTO $command,
-    ): string|YaMarketToken
-    {
-        /**
-         *  Валидация UsersTableActionsDeleteDTO
-         */
-        $errors = $this->validator->validate($command);
-
-        if(count($errors) > 0)
+        try
         {
-            /** Ошибка валидации */
-            $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
-
-            return $uniqid;
+            $this->preRemove($command);
+        }
+        catch(DomainException $errorUniqid)
+        {
+            return $errorUniqid->getMessage();
         }
 
-        /* Обязательно передается идентификатор события */
-        if($command->getEvent() === null)
+        /* Валидация всех объектов */
+        if($this->validatorCollection->isInvalid())
         {
-            $uniqid = uniqid('', false);
-            $errorsString = sprintf(
-                'Not found event id in class: %s',
-                $command::class,
-            );
-            $this->logger->error($uniqid.': '.$errorsString);
-
-            return $uniqid;
+            return $this->validatorCollection->getErrorUniqid();
         }
-
-        /** Получаем событие */
-        $Event = $this->entityManager->getRepository(YaMarketTokenEvent::class)
-            ->find($command->getEvent());
-
-        if($Event === null)
-        {
-            $uniqid = uniqid('', false);
-            $errorsString = sprintf(
-                'Not found %s by id: %s',
-                UsersTableActionsEvent::class,
-                $command->getEvent(),
-            );
-            $this->logger->error($uniqid.': '.$errorsString);
-
-            return $uniqid;
-        }
-
-        /** Получаем корень агрегата */
-        $Main = $this->entityManager->getRepository(YaMarketToken::class)
-            ->findOneBy(['event' => $command->getEvent()]);
-
-        if(empty($Main))
-        {
-            $uniqid = uniqid('', false);
-            $errorsString = sprintf(
-                'Not found %s by event: %s',
-                YaMarketToken::class,
-                $command->getEvent(),
-            );
-            $this->logger->error($uniqid.': '.$errorsString);
-
-            return $uniqid;
-        }
-
-        /** Применяем изменения к событию */
-        $Event->setEntity($command);
-        $this->entityManager->persist($Event);
-
-        /* Удаляем корень агрегата */
-        $this->entityManager->remove($Main);
 
         $this->entityManager->flush();
 
         /* Отправляем сообщение в шину */
         $this->messageDispatch->dispatch(
-            message: new YaMarketTokenMessage($Main->getId(), $Main->getEvent(), $command->getEvent()),
+            message: new YaMarketTokenMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
             transport: 'yandex-market',
         );
 
-        return $Main;
-
+        return $this->main;
     }
 }

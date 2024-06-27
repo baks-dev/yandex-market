@@ -18,7 +18,6 @@
 
 namespace BaksDev\Yandex\Market\Entity;
 
-
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;

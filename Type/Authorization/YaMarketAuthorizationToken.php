@@ -29,7 +29,6 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
 final class YaMarketAuthorizationToken
 {
-
     /**
      * ID настройки (профиль пользователя)
      */
@@ -57,8 +56,7 @@ final class YaMarketAuthorizationToken
         string $token,
         int|string $company,
         int|string $business
-    )
-    {
+    ) {
         if(is_string($profile))
         {
             $profile = new UserProfileUid($profile);
@@ -91,6 +89,4 @@ final class YaMarketAuthorizationToken
     {
         return $this->business;
     }
-
-
 }

@@ -42,23 +42,14 @@ use BaksDev\Yandex\Market\Entity\YaMarketToken;
 
 final class AllYaMarketTokenRepository implements AllYaMarketTokenInterface
 {
-    private PaginatorInterface $paginator;
-
-    private DBALQueryBuilder $DBALQueryBuilder;
-
     private ?SearchDTO $search = null;
 
     private ?UserProfileUid $profile = null;
 
-
     public function __construct(
-        DBALQueryBuilder $DBALQueryBuilder,
-        PaginatorInterface $paginator,
-    )
-    {
-        $this->paginator = $paginator;
-        $this->DBALQueryBuilder = $DBALQueryBuilder;
-    }
+        private readonly DBALQueryBuilder $DBALQueryBuilder,
+        private readonly PaginatorInterface $paginator,
+    ) {}
 
     public function search(SearchDTO $search): self
     {
@@ -81,7 +72,7 @@ final class AllYaMarketTokenRepository implements AllYaMarketTokenInterface
     /**
      * Метод возвращает пагинатор
      */
-    public function findAll(): PaginatorInterface
+    public function findAllPaginator(): PaginatorInterface
     {
         $qb = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)

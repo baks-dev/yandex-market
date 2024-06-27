@@ -34,7 +34,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /** @see YaMarketTokenEvent */
 final class YaMarketTokenDeleteDTO implements YaMarketTokenEventInterface
 {
-
     /**
      * Идентификатор события
      */

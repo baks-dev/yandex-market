@@ -20,8 +20,6 @@ namespace BaksDev\Yandex\Market\UseCase\Admin\Delete\Modify;
 
 use BaksDev\Core\Type\Modify\Modify\ModifyActionDelete;
 use BaksDev\Core\Type\Modify\ModifyAction;
-use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
-use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
 use BaksDev\Yandex\Market\Entity\Modify\YaMarketTokenModifyInterface;
 
 final class ModifyDTO implements YaMarketTokenModifyInterface
@@ -43,4 +41,3 @@ final class ModifyDTO implements YaMarketTokenModifyInterface
     }
 
 }
-

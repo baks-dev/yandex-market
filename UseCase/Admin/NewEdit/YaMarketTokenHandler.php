@@ -25,147 +25,78 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit;
 
+use BaksDev\Core\Entity\AbstractHandler;
 use BaksDev\Core\Messenger\MessageDispatchInterface;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Messenger\YaMarketTokenMessage;
 use Doctrine\ORM\EntityManagerInterface;
+use DomainException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-final class YaMarketTokenHandler
+final class YaMarketTokenHandler extends AbstractHandler
 {
+    //    private EntityManagerInterface $entityManager;
+    //
+    //    private ValidatorInterface $validator;
+    //
+    //    private LoggerInterface $logger;
+    //
+    //    private MessageDispatchInterface $messageDispatch;
+    //
+    //
+    //    public function __construct(
+    //        EntityManagerInterface $entityManager,
+    //        ValidatorInterface $validator,
+    //        LoggerInterface $yandexMarketLogger,
+    //        MessageDispatchInterface $messageDispatch,
+    //    )
+    //    {
+    //        $this->entityManager = $entityManager;
+    //        $this->validator = $validator;
+    //        $this->logger = $yandexMarketLogger;
+    //        $this->messageDispatch = $messageDispatch;
+    //
+    //    }
 
-    private EntityManagerInterface $entityManager;
 
-    private ValidatorInterface $validator;
-
-    private LoggerInterface $logger;
-
-    private MessageDispatchInterface $messageDispatch;
-
-
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        ValidatorInterface $validator,
-        LoggerInterface $yandexMarketLogger,
-        MessageDispatchInterface $messageDispatch,
-    )
-    {
-        $this->entityManager = $entityManager;
-        $this->validator = $validator;
-        $this->logger = $yandexMarketLogger;
-        $this->messageDispatch = $messageDispatch;
-
-    }
-
-
-    /** @see YaMarketToken */
+    /** @see Megamarket */
     public function handle(
-        YaMarketTokenDTO $command,
-    ): string|YaMarketToken
-    {
-        /**
-         *  Валидация DTO
-         */
-        $errors = $this->validator->validate($command);
+        YaMarketTokenDTO $command
+    ): string|YaMarketToken {
 
-        if(count($errors) > 0)
+        /** Валидация DTO  */
+        $this->validatorCollection->add($command);
+
+        $this->main = new YaMarketToken($command->getProfile());
+        $this->event = new YaMarketTokenEvent();
+
+        try
         {
-            /** Ошибка валидации */
-            $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
-
-            return $uniqid;
+            $command->getEvent() ? $this->preUpdate($command, true) : $this->prePersist($command);
+        }
+        catch(DomainException $errorUniqid)
+        {
+            return $errorUniqid->getMessage();
         }
 
-        if($command->getEvent())
+        /** Валидация всех объектов */
+        if($this->validatorCollection->isInvalid())
         {
-            $EventRepo = $this->entityManager->getRepository(YaMarketTokenEvent::class)
-                ->find(
-                    $command->getEvent(),
-                );
-
-            if($EventRepo === null)
-            {
-                $uniqid = uniqid('', false);
-                $errorsString = sprintf(
-                    'Not found %s by id: %s',
-                    YaMarketTokenEvent::class,
-                    $command->getEvent(),
-                );
-                $this->logger->error($uniqid.': '.$errorsString);
-
-                return $uniqid;
-            }
-
-            $EventRepo->setEntity($command);
-            $EventRepo->setEntityManager($this->entityManager);
-            $Event = $EventRepo->cloneEntity();
+            return $this->validatorCollection->getErrorUniqid();
         }
-        else
-        {
-            $Event = new YaMarketTokenEvent();
-            $Event->setEntity($command);
-            $this->entityManager->persist($Event);
-        }
-
-        //        $this->entityManager->clear();
-        //        $this->entityManager->persist($Event);
-
-
-        /** @var YaMarketToken $Main */
-        $Main = $this->entityManager->getRepository(YaMarketToken::class)
-            ->find($command->getProfile());
-
-        if(empty($Main))
-        {
-            $Main = new YaMarketToken($command->getProfile());
-            $this->entityManager->persist($Main);
-        }
-
-        /* присваиваем событие корню */
-        $Main->setEvent($Event);
-
-
-        /**
-         * Валидация Event
-         */
-
-        $errors = $this->validator->validate($Event);
-
-        if(count($errors) > 0)
-        {
-            /** Ошибка валидации */
-            $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
-
-            return $uniqid;
-        }
-
-        /**
-         * Валидация Main
-         */
-        $errors = $this->validator->validate($Main);
-
-        if(count($errors) > 0)
-        {
-            /** Ошибка валидации */
-            $uniqid = uniqid('', false);
-            $this->logger->error(sprintf('%s: %s', $uniqid, $errors), [__FILE__.':'.__LINE__]);
-
-            return $uniqid;
-        }
-
 
         $this->entityManager->flush();
 
         /* Отправляем сообщение в шину */
         $this->messageDispatch->dispatch(
-            message: new YaMarketTokenMessage($Main->getId(), $Main->getEvent(), $command->getEvent()),
-            transport: 'yandex-market',
+            message: new YaMarketTokenMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
+            transport: 'yandex-market'
         );
 
-        return $Main;
+        return $this->main;
     }
+
+
 }

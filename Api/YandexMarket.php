@@ -38,22 +38,20 @@ use Symfony\Component\HttpClient\RetryableHttpClient;
 
 abstract class YandexMarket
 {
+    private array $headers;
+
     protected LoggerInterface $logger;
 
     protected ?UserProfileUid $profile = null;
 
     private ?YaMarketAuthorizationToken $AuthorizationToken = null;
 
-    private YaMarketTokenByProfileInterface $TokenByProfile;
-
-    private array $headers;
 
     public function __construct(
-        YaMarketTokenByProfileInterface $TokenByProfile,
+        private readonly YaMarketTokenByProfileInterface $TokenByProfile,
         LoggerInterface $yandexMarketLogger,
-    )
-    {
-        $this->TokenByProfile = $TokenByProfile;
+    ) {
+
         $this->logger = $yandexMarketLogger;
     }
 
@@ -134,12 +132,12 @@ abstract class YandexMarket
         $this->headers['Content-Type'] = 'application/json; charset=utf-8';
 
         return '-H "'.implode('" -H "', array_map(
-                function($key, $value) {
-                    return "$key: $value";
-                },
-                array_keys($this->headers),
-                $this->headers
-            )).'"';
+            function ($key, $value) {
+                return "$key: $value";
+            },
+            array_keys($this->headers),
+            $this->headers
+        )).'"';
     }
 
 }

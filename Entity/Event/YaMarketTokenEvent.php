@@ -23,10 +23,10 @@
 
 namespace BaksDev\Yandex\Market\Entity\Event;
 
-
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Modify\YaMarketTokenModify;
+use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -109,6 +109,18 @@ class YaMarketTokenEvent extends EntityEvent
     {
         return (string) $this->id;
     }
+
+    public function setMain(YaMarketToken|UserProfileUid $profile): self
+    {
+        if($profile instanceof YaMarketToken)
+        {
+            $profile = $profile->getId();
+        }
+
+        $this->profile = $profile;
+        return $this;
+    }
+
 
     public function getDto($dto): mixed
     {

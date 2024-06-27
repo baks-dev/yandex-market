@@ -48,17 +48,9 @@ final class EditController extends AbstractController
         Request $request,
         #[MapEntity] YaMarketTokenEvent $YaMarketTokenEvent,
         YaMarketTokenHandler $YaMarketTokenHandler,
-    ): Response
-    {
+    ): Response {
 
         $YaMarketTokenDTO = new YaMarketTokenDTO();
-
-        //        dump($YaMarketTokenEvent);
-        //
-        //        dump(''.$this->getProfileUid());
-        //        dump(''.$YaMarketTokenDTO->getProfile());
-        //
-        //        dump($this->getProfileUid()?->equals($YaMarketTokenDTO->getProfile()));
 
         /** Запрещаем редактировать чужой токен */
         if($this->getAdminFilterProfile() === null || $this->getProfileUid()?->equals($YaMarketTokenEvent->getProfile()) === true)
@@ -73,8 +65,10 @@ final class EditController extends AbstractController
 
         // Форма
         $form = $this->createForm(YaMarketTokenForm::class, $YaMarketTokenDTO, [
-            'action' => $this->generateUrl('yandex-market:admin.newedit.edit',
-                ['id' => $YaMarketTokenDTO->getEvent() ?: new YaMarketTokenEventUid()]),
+            'action' => $this->generateUrl(
+                'yandex-market:admin.newedit.edit',
+                ['id' => $YaMarketTokenDTO->getEvent() ?: new YaMarketTokenEventUid()]
+            ),
         ]);
 
         $form->handleRequest($request);

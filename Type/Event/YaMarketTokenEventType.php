@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\Type\Event;
 
-
 use BaksDev\Core\Type\UidType\UidType;
 
 final class YaMarketTokenEventType extends UidType

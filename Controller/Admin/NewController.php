@@ -44,10 +44,8 @@ final class NewController extends AbstractController
     #[Route('/admin/ya/market/token/new', name: 'admin.newedit.new', methods: ['GET', 'POST'])]
     public function news(
         Request $request,
-        YaMarketTokenHandler $YaMarketTokenHandler,
-        LoggerInterface $yandexMarketLogger
-    ): Response
-    {
+        YaMarketTokenHandler $YaMarketTokenHandler
+    ): Response {
 
         $YaMarketTokenDTO = new YaMarketTokenDTO();
 

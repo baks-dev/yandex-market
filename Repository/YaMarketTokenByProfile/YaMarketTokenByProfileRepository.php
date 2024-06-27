@@ -23,35 +23,21 @@
 
 namespace BaksDev\Yandex\Market\Repository\YaMarketTokenByProfile;
 
-
-use BaksDev\Auth\Email\Type\EmailStatus\EmailStatus;
-use BaksDev\Auth\Email\Type\EmailStatus\Status\EmailStatusActive;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
-use BaksDev\Core\Doctrine\ORMQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
-use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
-use BaksDev\Users\User\Type\Id\UserUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
-use InvalidArgumentException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileInterface
 {
-
-    private DBALQueryBuilder $DBALQueryBuilder;
-
-    public function __construct(DBALQueryBuilder $DBALQueryBuilder)
-    {
-        $this->DBALQueryBuilder = $DBALQueryBuilder;
-    }
+    public function __construct(private readonly DBALQueryBuilder $DBALQueryBuilder) {}
 
     /**
-     * Токен авторизации
+     * Метод возвращает токен авторизации профиля
      */
     public function getToken(UserProfileUid $profile): ?YaMarketAuthorizationToken
     {
@@ -69,14 +55,18 @@ final class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileIn
             'event.id = token.event AND event.active = true',
         );
 
-        $qb->join(
-            'token',
-            UserProfileInfo::class,
-            'info',
-            'info.profile = token.id AND info.status = :status',
-        );
-
-        $qb->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+        $qb
+            ->join(
+                'token',
+                UserProfileInfo::class,
+                'info',
+                'info.profile = token.id AND info.status = :status',
+            )
+            ->setParameter(
+                'status',
+                UserProfileStatusActive::class,
+                UserProfileStatus::TYPE
+            );
 
         $qb->select('token.id AS profile');
         $qb->addSelect('event.token AS token');

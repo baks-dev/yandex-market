@@ -30,7 +30,7 @@ interface AllProfileYaMarketTokenInterface
     public function onlyActiveToken(): self;
 
     /**
-     * Метод возвращает профили пользователей, всех добавленных токенов авторизации
+     * Метод возвращает идентификаторы профилей всех добавленных токенов
      */
     public function findAll(): Generator;
 }

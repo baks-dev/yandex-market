@@ -25,10 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\Type\Event;
 
-use App\Kernel;
 use BaksDev\Core\Type\UidType\Uid;
-use Symfony\Component\Uid\AbstractUid;
-
 
 final class YaMarketTokenEventUid extends Uid
 {

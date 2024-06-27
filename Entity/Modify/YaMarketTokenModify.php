@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\Entity\Modify;
 
-
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Core\Type\Ip\IpAddress;
 use BaksDev\Core\Type\Modify\ModifyAction;
@@ -47,7 +46,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['action'])]
 class YaMarketTokenModify extends EntityEvent
 {
-
     /** ID события */
     #[Assert\NotBlank]
     #[ORM\Id]

@@ -42,14 +42,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[RoleSecurity('ROLE_YA_MARKET_TOKEN_DELETE')]
 final class DeleteController extends AbstractController
 {
-
     #[Route('/admin/ya/market/token/delete/{id}', name: 'admin.delete', methods: ['GET', 'POST'])]
     public function delete(
         Request $request,
         #[MapEntity] YaMarketTokenEvent $YaMarketTokenEvent,
         YaMarketTokenDeleteHandler $YaMarketTokenDeleteHandler,
-    ): Response
-    {
+    ): Response {
 
         $YaMarketTokenDeleteDTO = new YaMarketTokenDeleteDTO();
         $YaMarketTokenEvent->getDto($YaMarketTokenDeleteDTO);

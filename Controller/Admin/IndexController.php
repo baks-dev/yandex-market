@@ -44,12 +44,13 @@ final class IndexController extends AbstractController
         Request $request,
         AllYaMarketTokenInterface $paginator,
         int $page = 0,
-    ): Response
-    {
+    ): Response {
 
         // Поиск
         $search = new SearchDTO();
-        $searchForm = $this->createForm(SearchForm::class, $search,
+        $searchForm = $this->createForm(
+            SearchForm::class,
+            $search,
             ['action' => $this->generateUrl('yandex-market:admin.index')]
         );
 
@@ -60,7 +61,7 @@ final class IndexController extends AbstractController
         // Получаем список
         $AllYaMarket = $paginator
             ->search($search)
-            ->findAll();
+            ->findAllPaginator();
 
         return $this->render(
             [

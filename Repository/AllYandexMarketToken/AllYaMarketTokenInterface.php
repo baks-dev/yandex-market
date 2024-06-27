@@ -36,6 +36,6 @@ interface AllYaMarketTokenInterface
     /**
      * Метод возвращает пагинатор
      */
-    public function findAll(): PaginatorInterface;
+    public function findAllPaginator(): PaginatorInterface;
 
 }

@@ -38,7 +38,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class YaMarketTokenForm extends AbstractType
 {
-
     private UserProfileChoiceInterface $profileChoice;
 
 
@@ -58,10 +57,10 @@ final class YaMarketTokenForm extends AbstractType
             /* TextType */
             $builder->add('profile', ChoiceType::class, [
                 'choices' => $this->profileChoice->getActiveUserProfile(),
-                'choice_value' => function(?UserProfileUid $profile) {
+                'choice_value' => function (?UserProfileUid $profile) {
                     return $profile?->getValue();
                 },
-                'choice_label' => function(UserProfileUid $profile) {
+                'choice_label' => function (UserProfileUid $profile) {
                     return $profile->getAttr();
                 },
                 'label' => false,
@@ -83,7 +82,8 @@ final class YaMarketTokenForm extends AbstractType
 
         /* Сохранить ******************************************************/
         $builder->add(
-            'ya_market_token', SubmitType::class,
+            'ya_market_token',
+            SubmitType::class,
             ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-primary']]
         );
     }

@@ -38,14 +38,9 @@ use Generator;
 
 final class AllProfileYaMarketTokenRepository implements AllProfileYaMarketTokenInterface
 {
-    private DBALQueryBuilder $DBALQueryBuilder;
-
     private bool $active = false;
 
-    public function __construct(DBALQueryBuilder $DBALQueryBuilder)
-    {
-        $this->DBALQueryBuilder = $DBALQueryBuilder;
-    }
+    public function __construct(private readonly DBALQueryBuilder $DBALQueryBuilder) {}
 
     public function onlyActiveToken(): self
     {
@@ -54,7 +49,7 @@ final class AllProfileYaMarketTokenRepository implements AllProfileYaMarketToken
     }
 
     /**
-     * Метод возвращает профили пользователей, всех добавленных токенов
+     * Метод возвращает идентификаторы профилей всех добавленных токенов
      */
     public function findAll(): Generator
     {
