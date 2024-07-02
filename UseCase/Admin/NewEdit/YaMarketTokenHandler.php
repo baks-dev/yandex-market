@@ -61,7 +61,7 @@ final class YaMarketTokenHandler extends AbstractHandler
     //    }
 
 
-    /** @see Megamarket */
+    /** @see YaMarket */
     public function handle(
         YaMarketTokenDTO $command
     ): string|YaMarketToken {

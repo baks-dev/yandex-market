@@ -126,6 +126,18 @@ abstract class YandexMarket
         return $this->AuthorizationToken->getCompany();
     }
 
+    public function getPercent(float|int $price): int|float
+    {
+        $percent = $this->AuthorizationToken->getPercent();
+
+        if($percent === 0)
+        {
+            return 0;
+        }
+
+        return ($price / 100 * $percent);
+    }
+
     protected function getCurlHeader(): string
     {
         $this->headers['accept'] = 'application/json';

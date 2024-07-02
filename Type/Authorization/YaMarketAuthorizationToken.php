@@ -44,19 +44,25 @@ final class YaMarketAuthorizationToken
      */
     private readonly int $company;
 
-
     /**
      * Идентификатор кабинета
      */
     private readonly int $business;
+
+    /**
+     * Торговая наценка
+     */
+    private int $percent;
 
 
     public function __construct(
         UserProfileUid|string $profile,
         string $token,
         int|string $company,
-        int|string $business
+        int|string $business,
+        int|string $percent = 0
     ) {
+
         if(is_string($profile))
         {
             $profile = new UserProfileUid($profile);
@@ -66,14 +72,13 @@ final class YaMarketAuthorizationToken
         $this->token = $token;
         $this->company = (int) $company;
         $this->business = (int) $business;
+        $this->percent = (int) $percent;
     }
-
 
     public function getProfile(): UserProfileUid
     {
         return $this->profile;
     }
-
 
     public function getToken(): string
     {
@@ -88,5 +93,10 @@ final class YaMarketAuthorizationToken
     public function getBusiness(): int
     {
         return $this->business;
+    }
+
+    public function getPercent(): int
+    {
+        return $this->percent;
     }
 }

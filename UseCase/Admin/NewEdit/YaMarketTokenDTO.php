@@ -31,7 +31,7 @@ use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/** @see MegamarketTokenEvent */
+/** @see YaMarketTokenEvent */
 final class YaMarketTokenDTO implements YaMarketTokenEventInterface
 {
     /**
@@ -52,7 +52,6 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
      */
     private ?string $token = null;
 
-
     /**
      * Идентификатор компании
      */
@@ -65,12 +64,16 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
     #[Assert\NotBlank]
     private int $business;
 
+    /**
+     * Торговая наценка
+     */
+    #[Assert\NotBlank]
+    private int $percent = 0;
 
     /**
      * Статус true = активен / false = заблокирован
      */
     private bool $active = true;
-
 
 
     public function setId(?YaMarketTokenEventUid $id): void
@@ -157,9 +160,24 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
         return $this->active;
     }
 
-
-    public function setActive(bool $active): void
+    public function setActive(bool $active): self
     {
         $this->active = $active;
+        return $this;
     }
+
+    /**
+     * Percent
+     */
+    public function getPercent(): int
+    {
+        return $this->percent;
+    }
+
+    public function setPercent(int $percent): self
+    {
+        $this->percent = $percent;
+        return $this;
+    }
+
 }

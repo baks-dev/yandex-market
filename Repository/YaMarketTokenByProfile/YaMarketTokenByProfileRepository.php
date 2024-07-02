@@ -72,6 +72,7 @@ final class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileIn
         $qb->addSelect('event.token AS token');
         $qb->addSelect('event.company AS company');
         $qb->addSelect('event.business AS business');
+        $qb->addSelect('event.percent AS percent');
 
         /* Кешируем результат ORM */
         return $qb

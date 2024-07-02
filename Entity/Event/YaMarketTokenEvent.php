@@ -64,14 +64,12 @@ class YaMarketTokenEvent extends EntityEvent
     #[ORM\Column(type: Types::TEXT)]
     private string $token;
 
-
     /**
      * Идентификатор компании
      */
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::INTEGER, nullable: true)] // 85604808
     private int $company;
-
 
     /**
      * Идентификатор кабинета
@@ -80,6 +78,12 @@ class YaMarketTokenEvent extends EntityEvent
     #[ORM\Column(type: Types::INTEGER)]
     private int $business;
 
+    /**
+     * Торговая наценка
+     */
+    #[Assert\NotBlank]
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $percent = 0;
 
     /**
      * Статус true = активен / false = заблокирован

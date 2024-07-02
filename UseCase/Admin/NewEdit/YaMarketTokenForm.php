@@ -30,6 +30,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -76,6 +77,10 @@ final class YaMarketTokenForm extends AbstractType
         $builder->add('company', NumberType::class);
 
         $builder->add('business', NumberType::class);
+
+        $builder->add('percent', IntegerType::class, [
+            'attr' => ['max' => 100, 'min' => 0]
+        ]);
 
         $builder->add('active', CheckboxType::class, ['required' => false]);
 
