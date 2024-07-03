@@ -68,6 +68,7 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
      * Торговая наценка
      */
     #[Assert\NotBlank]
+    #[Assert\Range(min: 0, max: 100)]
     private int $percent = 0;
 
     /**
