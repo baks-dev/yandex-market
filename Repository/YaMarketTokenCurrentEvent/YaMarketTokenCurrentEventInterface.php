@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,13 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Yandex\Market\Repository\YaMarketTokenByProfile;
+namespace BaksDev\Yandex\Market\Repository\YaMarketTokenCurrentEvent;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
+use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 
-interface YaMarketTokenByProfileInterface
+interface YaMarketTokenCurrentEventInterface
 {
-    /**
-     * Токен авторизации
-     */
-    public function getToken(UserProfileUid|string $profile): ?YaMarketAuthorizationToken;
-
+    /** Метод возвращает активное событие токена профиля */
+    public function findByProfile(UserProfileUid|string $profile): YaMarketTokenEvent|false;
 }

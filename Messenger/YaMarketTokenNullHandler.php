@@ -25,12 +25,13 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\Messenger;
 
+use BaksDev\Yandex\Market\Repository\YaMarketTokenCurrentEvent\YaMarketTokenCurrentEventInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(priority: 0)]
 final class YaMarketTokenNullHandler
 {
-    public function __construct() {}
+    public function __construct(YaMarketTokenCurrentEventInterface $yaMarketTokenCurrentEvent) {}
 
     public function __invoke(YaMarketTokenMessage $message): void {}
 }

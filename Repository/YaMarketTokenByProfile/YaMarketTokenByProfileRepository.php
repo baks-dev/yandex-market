@@ -32,15 +32,20 @@ use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
 
-final class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileInterface
+final readonly class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileInterface
 {
-    public function __construct(private readonly DBALQueryBuilder $DBALQueryBuilder) {}
+    public function __construct(private DBALQueryBuilder $DBALQueryBuilder) {}
 
     /**
      * Метод возвращает токен авторизации профиля
      */
-    public function getToken(UserProfileUid $profile): ?YaMarketAuthorizationToken
+    public function getToken(UserProfileUid|string $profile): ?YaMarketAuthorizationToken
     {
+        if(is_string($profile))
+        {
+            $profile = new UserProfileUid($profile);
+        }
+
         $qb = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
         $qb

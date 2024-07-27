@@ -55,7 +55,7 @@ class YaMarketTokenEvent extends EntityEvent
     #[Assert\NotBlank]
     #[Assert\Uuid]
     #[ORM\Column(type: UserProfileUid::TYPE)]
-    private UserProfileUid $profile;
+    private readonly UserProfileUid $profile;
 
     /**
      * Токен
