@@ -39,7 +39,7 @@ final readonly class YaMarketTokenByProfileRepository implements YaMarketTokenBy
     /**
      * Метод возвращает токен авторизации профиля
      */
-    public function getToken(UserProfileUid|string $profile): ?YaMarketAuthorizationToken
+    public function getToken(UserProfileUid|string $profile): YaMarketAuthorizationToken|false
     {
         if(is_string($profile))
         {

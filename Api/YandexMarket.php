@@ -82,7 +82,7 @@ abstract class YandexMarket
         {
             if(!$this->profile)
             {
-                $this->logger->critical('Не указан идентификатор профиля пользователя через вызов метода profile', [__FILE__.':'.__LINE__]);
+                $this->logger->critical('Не указан идентификатор профиля пользователя через вызов метода profile', [self::class.':'.__LINE__]);
 
                 throw new InvalidArgumentException(
                     'Не указан идентификатор профиля пользователя через вызов метода profile: ->profile($UserProfileUid)'
@@ -103,7 +103,7 @@ abstract class YandexMarket
             HttpClient::create(['headers' => $this->headers])
                 ->withOptions([
                     'base_uri' => 'https://api.partner.market.yandex.ru',
-                    'verify_host' => false
+                    'verify_host' => false,
                 ])
         );
     }

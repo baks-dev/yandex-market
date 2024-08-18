@@ -31,6 +31,6 @@ interface YaMarketTokenByProfileInterface
     /**
      * Токен авторизации
      */
-    public function getToken(UserProfileUid|string $profile): ?YaMarketAuthorizationToken;
+    public function getToken(UserProfileUid|string $profile): YaMarketAuthorizationToken|false;
 
 }
