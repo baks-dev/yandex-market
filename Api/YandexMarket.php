@@ -44,7 +44,7 @@ abstract class YandexMarket
 
     protected ?UserProfileUid $profile = null;
 
-    private ?YaMarketAuthorizationToken $AuthorizationToken = null;
+    private YaMarketAuthorizationToken|false $AuthorizationToken = false;
 
 
     public function __construct(
@@ -70,15 +70,15 @@ abstract class YandexMarket
         return $this;
     }
 
-    public function TokenHttpClient(YaMarketAuthorizationToken $AuthorizationToken = null): RetryableHttpClient
+    public function TokenHttpClient(YaMarketAuthorizationToken|false $AuthorizationToken = false): RetryableHttpClient
     {
-        if($AuthorizationToken !== null)
+        if($AuthorizationToken !== false)
         {
             $this->AuthorizationToken = $AuthorizationToken;
             $this->profile = $AuthorizationToken->getProfile();
         }
 
-        if($this->AuthorizationToken === null)
+        if($this->AuthorizationToken === false)
         {
             if(!$this->profile)
             {
