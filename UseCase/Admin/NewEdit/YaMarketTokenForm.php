@@ -30,6 +30,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -74,6 +75,7 @@ final class YaMarketTokenForm extends AbstractType
 
         $builder->add('token', TextareaType::class, ['required' => false]);
 
+
         $builder->add('company', NumberType::class);
 
         $builder->add('business', NumberType::class);
@@ -83,6 +85,17 @@ final class YaMarketTokenForm extends AbstractType
         ]);
 
         $builder->add('active', CheckboxType::class, ['required' => false]);
+
+        /* Коллекция продукции */
+        $builder->add('extra', CollectionType::class, [
+            'entry_type' => Company\YaMarketCompanyForm::class,
+            'entry_options' => ['label' => false],
+            'label' => false,
+            'by_reference' => false,
+            'allow_delete' => true,
+            'allow_add' => true,
+            'prototype_name' => '__company__',
+        ]);
 
 
         /* Сохранить ******************************************************/

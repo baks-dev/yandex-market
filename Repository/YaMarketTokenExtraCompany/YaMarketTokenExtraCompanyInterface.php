@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,19 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace BaksDev\Yandex\Market\Repository\YaMarketTokenExtraCompany;
 
-use BaksDev\Yandex\Market\BaksDevYandexMarketBundle;
-use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyType;
-use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyUid;
-use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventType;
-use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
-use Symfony\Config\DoctrineConfig;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
-return static function (DoctrineConfig $doctrine, ContainerConfigurator $configurator): void {
+/**
+ * Метод возвращает дополнительные идентификаторы компании профиля пользователя
+ */
+interface YaMarketTokenExtraCompanyInterface
+{
+    public function profile(UserProfileUid|string $profile): self;
 
-    $doctrine->dbal()->type(YaMarketTokenEventUid::TYPE)->class(YaMarketTokenEventType::class);
-    $doctrine->dbal()->type(YaMarketTokenCompanyUid::TYPE)->class(YaMarketTokenCompanyType::class);
-
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
-
-    $emDefault
-        ->mapping('yandex-market')
-        ->type('attribute')
-        ->dir(BaksDevYandexMarketBundle::PATH.'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Yandex\Market\Entity')
-        ->alias('yandex-market');
-};
+    /**
+     * Метод возвращает дополнительные идентификаторы компании профиля пользователя
+     */
+    public function execute(): array|false;
+}

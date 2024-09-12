@@ -121,10 +121,19 @@ abstract class YandexMarket
         return $this->AuthorizationToken->getBusiness();
     }
 
-    protected function getCompany(): int
+    /** Возвращает основной идентификатор компании */
+    public function getCompany(): int
     {
         return $this->AuthorizationToken->getCompany();
     }
+
+    /** Присваивает дополнительный идентификатор компании (EXTRA) */
+    public function setExtraCompany(int $company): self
+    {
+        $this->AuthorizationToken->setExtraCompany($company);
+        return $this;
+    }
+
 
     public function getPercent(float|int $price): int|float
     {

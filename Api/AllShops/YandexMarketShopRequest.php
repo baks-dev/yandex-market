@@ -49,7 +49,7 @@ final class YandexMarketShopRequest extends YandexMarket
 
         $cache = new FilesystemAdapter('yandex-market');
 
-        $content = $cache->get('ya-market-shops-'.$this->profile->getValue(), function(
+        $content = $cache->get('ya-market-shops-'.$this->profile->getValue(), function (
             ItemInterface $item
         ) {
 

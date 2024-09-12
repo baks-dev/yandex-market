@@ -1,5 +1,9 @@
 {% trans_default_domain 'yandex-market.admin' %}
 
+{% set prototype_form = form.extra.vars.prototype %}
+{% set prototype_company = form_widget(form.extra.vars.prototype.company, { attr: { placeholder: 'campaign_id', class: 'w-100' }} ) %}
+
+
 <div class="tab-content" id="token_tab_content">
 
     {# ОСНОВНЫЕ НАСТРОЙКИ #}
@@ -19,12 +23,62 @@
             </div>
         {% endif %}
 
+
         <div class="d-flex gap-3">
-            {{ form_row(form.company, { label: 'Идентификатор компании' }) }}
 
-            {{ form_row(form.business, { label: 'Идентификатор кабинета' }) }}
+            <div class="w-50">
+                {{ form_row(form.company, { label: 'Основной идентификатор компании', attr: { placeholder: 'ID кампании, campaign_id', class: 'w-100' } }) }}
 
-            {{ form_row(form.percent, { label: 'Торговая наценка' }) }}
+                <div class="{{ form.vars.id }}" id='{{ form.vars.id }}'>
+                    {% for company in form.extra %}
+                        <div class='mb-3' id='item_{{ company.vars.id }}'>
+                            {{ include(_self|replace({ "form.html.twig": "company/company.html.twig" })) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <div class="w-50">
+            {{ form_row(form.business, { label: 'Идентификатор кабинета', attr: { placeholder: 'ID кабинета, business_id' } }) }}
+            </div>
+            <div class="w-25">
+                {{ form_row(form.percent, { label: 'Торговая наценка' }) }}
+            </div>
+
+
+        </div>
+
+
+        <div class="mb-3">
+            <button type="button"
+                    id="add_company"
+                    class="btn btn-sm btn-outline-primary border-0"
+                    data-prototype="{{ include(_self|replace({ "form.html.twig": "company/prototype.html.twig" }) )|e('html_attr') }}"
+                    data-collection="{{ form.vars.id }}"
+                    data-index="{{ form.extra.count }}"
+
+            >
+						<span class="svg-icon svg-icon-2">
+							<svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none">
+								<rect opacity="0.5"
+                                      x="11"
+                                      y="18"
+                                      width="12"
+                                      height="2"
+                                      rx="1"
+                                      transform="rotate(-90 11 18)"
+                                      fill="currentColor">
+							</rect>
+								<rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"></rect>
+							</svg>
+						</span>
+                Добавить еще идентификатор компании
+            </button>
         </div>
 
         <div class="flex-fill d-flex justify-content-around pb-3 radio-buttons gap-3" data-buttons="true">

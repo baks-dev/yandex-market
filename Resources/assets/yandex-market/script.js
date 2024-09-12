@@ -21,3 +21,42 @@
  */
 
 
+/** Добавить контактный телефон */
+
+document.querySelectorAll('#add_company').forEach(function(item)
+{
+    item.addEventListener('click', addTokenCompany);
+});
+
+function addTokenCompany()
+{
+    /* Получаем прототип формы */
+    let newForm = this.dataset.prototype;
+    let index = this.dataset.index * 1;
+    let collection = this.dataset.collection;
+
+    newForm = newForm.replace(/__company__/g, index)
+
+    let div = document.createElement('div');
+    div.innerHTML = newForm;
+    div.id = 'item_' + collection + '_extra_' + index;
+    div.classList.add('mb-3');
+
+    let $collection = document.getElementById(collection);
+    $collection.append(div);
+
+    /* Удаляем контактный номер телефона */
+    (div.querySelector('.del-item-company'))?.addEventListener('click', deleteTokenCompany);
+
+    this.dataset.index = (index + 1).toString();
+}
+
+document.querySelectorAll('.del-item-company').forEach(function(item)
+{
+    item.addEventListener('click', deleteTokenCompany);
+});
+
+function deleteTokenCompany()
+{
+    document.getElementById(this.dataset.delete).remove();
+}

@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,17 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+declare(strict_types=1);
 
-use BaksDev\Yandex\Market\BaksDevYandexMarketBundle;
-use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyType;
-use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyUid;
-use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventType;
-use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
-use Symfony\Config\DoctrineConfig;
+namespace BaksDev\Yandex\Market\Type\Company;
 
-return static function (DoctrineConfig $doctrine, ContainerConfigurator $configurator): void {
+use BaksDev\Core\Type\UidType\Uid;
+use Symfony\Component\Uid\AbstractUid;
 
-    $doctrine->dbal()->type(YaMarketTokenEventUid::TYPE)->class(YaMarketTokenEventType::class);
-    $doctrine->dbal()->type(YaMarketTokenCompanyUid::TYPE)->class(YaMarketTokenCompanyType::class);
+final class YaMarketTokenCompanyUid extends Uid
+{
+    public const TEST = '0d728727-48b7-7c1b-bd41-08b13eb40398';
 
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
+    public const TYPE = 'ya_market_token_company';
 
-    $emDefault
-        ->mapping('yandex-market')
-        ->type('attribute')
-        ->dir(BaksDevYandexMarketBundle::PATH.'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Yandex\Market\Entity')
-        ->alias('yandex-market');
-};
+}

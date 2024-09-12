@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,34 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+declare(strict_types=1);
 
-use BaksDev\Yandex\Market\BaksDevYandexMarketBundle;
-use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyType;
+namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company;
+
+use BaksDev\Yandex\Market\Entity\Company\YaMarketTokenExtraInterface;
 use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyUid;
-use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventType;
-use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
-use Symfony\Config\DoctrineConfig;
+use Symfony\Component\Validator\Constraints as Assert;
 
-return static function (DoctrineConfig $doctrine, ContainerConfigurator $configurator): void {
+/** @see YaMarketTokenExtra */
+final class YaMarketTokenExtraDTO implements YaMarketTokenExtraInterface
+{
+    /**
+     * Идентификатор компании
+     */
+    #[Assert\NotBlank]
+    private ?int $company = null;
 
-    $doctrine->dbal()->type(YaMarketTokenEventUid::TYPE)->class(YaMarketTokenEventType::class);
-    $doctrine->dbal()->type(YaMarketTokenCompanyUid::TYPE)->class(YaMarketTokenCompanyType::class);
+    /**
+     * Company
+     */
+    public function getCompany(): ?int
+    {
+        return $this->company;
+    }
 
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
-
-    $emDefault
-        ->mapping('yandex-market')
-        ->type('attribute')
-        ->dir(BaksDevYandexMarketBundle::PATH.'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Yandex\Market\Entity')
-        ->alias('yandex-market');
-};
+    public function setCompany(int $company): self
+    {
+        $this->company = $company;
+        return $this;
+    }
+}

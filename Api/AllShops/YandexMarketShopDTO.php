@@ -28,10 +28,8 @@ namespace BaksDev\Yandex\Market\Api\AllShops;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 final class YandexMarketShopDTO
 {
-
     private UserProfileUid $profile;
 
     /** Название магазина */

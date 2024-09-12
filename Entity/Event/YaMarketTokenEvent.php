@@ -25,9 +25,11 @@ namespace BaksDev\Yandex\Market\Entity\Event;
 
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Yandex\Market\Entity\Company\YaMarketTokenExtra;
 use BaksDev\Yandex\Market\Entity\Modify\YaMarketTokenModify;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
@@ -65,10 +67,17 @@ class YaMarketTokenEvent extends EntityEvent
     private string $token;
 
     /**
+     * Статус true = активен / false = заблокирован
+     */
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $active = true;
+
+
+    /**
      * Идентификатор компании
      */
     #[Assert\NotBlank]
-    #[ORM\Column(type: Types::INTEGER, nullable: true)] // 85604808
+    #[ORM\Column(type: Types::INTEGER)] // 85604808
     private int $company;
 
     /**
@@ -87,10 +96,11 @@ class YaMarketTokenEvent extends EntityEvent
     private int $percent = 0;
 
     /**
-     * Статус true = активен / false = заблокирован
+     * Коллекция дополнительных идентификаторов
      */
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private bool $active = true;
+    #[ORM\OneToMany(targetEntity: YaMarketTokenExtra::class, mappedBy: 'event', cascade: ['all'])]
+    private Collection $extra;
+
 
     /**
      * Модификатор

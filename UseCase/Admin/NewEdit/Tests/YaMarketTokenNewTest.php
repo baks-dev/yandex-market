@@ -29,6 +29,7 @@ use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenExtraDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -91,6 +92,16 @@ class YaMarketTokenNewTest extends KernelTestCase
 
         $YaMarketTokenDTO->setCompany(123456789);
         self::assertEquals(123456789, $YaMarketTokenDTO->getCompany());
+
+
+        /** Extra Company */
+
+        $YaMarketCompanyDTO = new YaMarketTokenExtraDTO();
+        $YaMarketTokenDTO->addExtra($YaMarketCompanyDTO);
+
+        $YaMarketCompanyDTO->setCompany(111111111);
+        self::assertEquals(111111111, $YaMarketCompanyDTO->getCompany());
+
 
         /** @var YaMarketTokenHandler $YaMarketTokenHandler */
         $YaMarketTokenHandler = self::getContainer()->get(YaMarketTokenHandler::class);

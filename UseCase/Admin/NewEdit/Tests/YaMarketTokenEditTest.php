@@ -28,6 +28,7 @@ namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Tests;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Repository\YaMarketTokenCurrentEvent\YaMarketTokenCurrentEventInterface;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenExtraDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenHandler;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -75,6 +76,16 @@ class YaMarketTokenEditTest extends KernelTestCase
 
         self::assertEquals(123456789, $YaMarketTokenDTO->getCompany());
         $YaMarketTokenDTO->setCompany(987654321);
+
+
+        /** Extra Company */
+
+
+        /** @var YaMarketTokenExtraDTO $YaMarketCompanyDTO */
+        $YaMarketCompanyDTO = $YaMarketTokenDTO->getExtra()->current();
+
+        self::assertEquals(111111111, $YaMarketCompanyDTO->getCompany());
+        $YaMarketCompanyDTO->setCompany(222222222);
 
 
         /** @var YaMarketTokenHandler $YaMarketTokenHandler */

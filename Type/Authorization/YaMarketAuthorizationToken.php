@@ -40,14 +40,15 @@ final class YaMarketAuthorizationToken
     private readonly string $token;
 
     /**
-     * Идентификатор компании
-     */
-    private readonly int $company;
-
-    /**
      * Идентификатор кабинета
      */
     private readonly int $business;
+
+    /**
+     * Идентификатор компании
+     */
+    private int $company;
+
 
     /**
      * Торговая наценка
@@ -89,6 +90,13 @@ final class YaMarketAuthorizationToken
     {
         return $this->company;
     }
+
+    public function setExtraCompany(int $company): self
+    {
+        $this->company = $company;
+        return $this;
+    }
+
 
     public function getBusiness(): int
     {

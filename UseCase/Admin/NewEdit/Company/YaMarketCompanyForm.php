@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,29 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+declare(strict_types=1);
 
-use BaksDev\Yandex\Market\BaksDevYandexMarketBundle;
-use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyType;
-use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyUid;
-use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventType;
-use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
-use Symfony\Config\DoctrineConfig;
+namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company;
 
-return static function (DoctrineConfig $doctrine, ContainerConfigurator $configurator): void {
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-    $doctrine->dbal()->type(YaMarketTokenEventUid::TYPE)->class(YaMarketTokenEventType::class);
-    $doctrine->dbal()->type(YaMarketTokenCompanyUid::TYPE)->class(YaMarketTokenCompanyType::class);
+final class YaMarketCompanyForm extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder->add('company', NumberType::class);
+    }
 
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
-
-    $emDefault
-        ->mapping('yandex-market')
-        ->type('attribute')
-        ->dir(BaksDevYandexMarketBundle::PATH.'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Yandex\Market\Entity')
-        ->alias('yandex-market');
-};
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => YaMarketTokenExtraDTO::class,
+            'method' => 'POST',
+            'attr' => ['class' => 'w-100'],
+        ]);
+    }
+}

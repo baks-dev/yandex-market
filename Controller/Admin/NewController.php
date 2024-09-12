@@ -61,6 +61,11 @@ final class NewController extends AbstractController
 
         $form->handleRequest($request);
 
+        if($form->isSubmitted() && $form->isValid() === false)
+        {
+            dd($form->getErrors());
+        }
+
         if($form->isSubmitted() && $form->isValid() && $form->has('ya_market_token'))
         {
             $this->refreshTokenForm($form);

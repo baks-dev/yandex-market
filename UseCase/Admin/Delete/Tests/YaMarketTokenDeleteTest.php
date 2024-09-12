@@ -31,6 +31,7 @@ use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Repository\YaMarketTokenCurrentEvent\YaMarketTokenCurrentEventInterface;
 use BaksDev\Yandex\Market\UseCase\Admin\Delete\YaMarketTokenDeleteDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\Delete\YaMarketTokenDeleteHandler;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenExtraDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Tests\YaMarketTokenEditTest;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Tests\YaMarketTokenNewTest;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenDTO;
@@ -66,6 +67,14 @@ class YaMarketTokenDeleteTest extends KernelTestCase
         self::assertTrue($YaMarketTokenDTO->getProfile()->equals(UserProfileUid::TEST)); //($UserProfileUid::TEST, $YaMarketTokenDTO->getProfile());
         self::assertEquals(987654321, $YaMarketTokenDTO->getBusiness());
         self::assertEquals(987654321, $YaMarketTokenDTO->getCompany());
+
+
+        /** Extra Company */
+
+        /** @var YaMarketTokenExtraDTO $YaMarketCompanyDTO */
+        $YaMarketCompanyDTO = $YaMarketTokenDTO->getExtra()->current();
+        self::assertEquals(222222222, $YaMarketCompanyDTO->getCompany());
+
 
         /** @see YaMarketTokenDeleteDTO */
         $YaMarketTokenDeleteDTO = new YaMarketTokenDeleteDTO();

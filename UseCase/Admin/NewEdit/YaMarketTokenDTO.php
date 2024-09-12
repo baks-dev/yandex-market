@@ -28,6 +28,8 @@ namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEventInterface;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenExtraDTO;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -52,17 +54,18 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
      */
     private ?string $token = null;
 
-    /**
-     * Идентификатор компании
-     */
-    #[Assert\NotBlank]
-    private int $company;
 
     /**
      * Идентификатор кабинета
      */
     #[Assert\NotBlank]
     private int $business;
+
+    /**
+     * Идентификатор компании
+     */
+    #[Assert\NotBlank]
+    private int $company;
 
     /**
      * Торговая наценка
@@ -75,6 +78,17 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
      * Статус true = активен / false = заблокирован
      */
     private bool $active = true;
+
+    /** Коллекция дополнительных идентификаторов*/
+    private ArrayCollection $extra;
+
+    public function __construct()
+    {
+        $this->extra = new ArrayCollection();
+    }
+
+
+
 
 
     public function setId(?YaMarketTokenEventUid $id): void
@@ -178,6 +192,35 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
     public function setPercent(int $percent): self
     {
         $this->percent = $percent;
+        return $this;
+    }
+
+
+    /**
+     * Company
+     */
+    public function getExtra(): ArrayCollection
+    {
+        return $this->extra;
+    }
+
+    public function setExtra(ArrayCollection $extra): self
+    {
+        $this->extra = $extra;
+        return $this;
+    }
+
+    public function addExtra(YaMarketTokenExtraDTO $company): self
+    {
+        $filter = $this->extra->filter(function (YaMarketTokenExtraDTO $element) use ($company) {
+            return $company->getCompany() === $element->getCompany() && $company->getBusiness() === $element->getBusiness();
+        });
+
+        if($filter->isEmpty())
+        {
+            $this->extra->add($company);
+        }
+
         return $this;
     }
 
