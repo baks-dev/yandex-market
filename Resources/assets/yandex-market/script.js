@@ -35,18 +35,27 @@ function addTokenCompany()
     let index = this.dataset.index * 1;
     let collection = this.dataset.collection;
 
-    newForm = newForm.replace(/__company__/g, index)
+    newForm = newForm.replace(/__company__/g, index);
 
     let div = document.createElement('div');
     div.innerHTML = newForm;
-    div.id = 'item_' + collection + '_extra_' + index;
+
+    let delButton = div.querySelector('.del-item-company');
+
+    if(delButton === null)
+    {
+        return;
+    }
+
+    div.id = delButton.dataset.delete;
     div.classList.add('mb-3');
 
     let $collection = document.getElementById(collection);
     $collection.append(div);
 
+
     /* Удаляем контактный номер телефона */
-    (div.querySelector('.del-item-company'))?.addEventListener('click', deleteTokenCompany);
+    delButton.addEventListener('click', deleteTokenCompany);
 
     this.dataset.index = (index + 1).toString();
 }

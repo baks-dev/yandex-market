@@ -2,6 +2,7 @@
 
 {% set prototype_form = form.extra.vars.prototype %}
 {% set prototype_company = form_widget(form.extra.vars.prototype.company, { attr: { placeholder: 'campaign_id', class: 'w-100' }} ) %}
+{% set prototype_company_id = form.extra.vars.prototype.company.vars.id %}
 
 
 <div class="tab-content" id="token_tab_content">
@@ -31,7 +32,7 @@
 
                 <div class="{{ form.vars.id }}" id='{{ form.vars.id }}'>
                     {% for company in form.extra %}
-                        <div class='mb-3' id='item_{{ company.vars.id }}'>
+                        <div class='mb-3' id='item_{{ company.company.vars.id }}'>
                             {{ include(_self|replace({ "form.html.twig": "company/company.html.twig" })) }}
                         </div>
                     {% endfor %}
