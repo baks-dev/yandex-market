@@ -66,10 +66,10 @@ final class YaMarketTokenHandler extends AbstractHandler
         YaMarketTokenDTO $command
     ): string|YaMarketToken {
 
-
         $this->setCommand($command);
 
-        $this->preEventPersistOrUpdate(YaMarketToken::class, YaMarketTokenEvent::class);
+        $YaMarketToken = new YaMarketToken($command->getProfile());
+        $this->preEventPersistOrUpdate($YaMarketToken, YaMarketTokenEvent::class);
 
         /** Валидация всех объектов */
         if($this->validatorCollection->isInvalid())
