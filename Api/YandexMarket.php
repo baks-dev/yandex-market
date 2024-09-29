@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\Api;
 
+use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
 use BaksDev\Yandex\Market\Repository\YaMarketTokenByProfile\YaMarketTokenByProfileInterface;
@@ -35,23 +36,22 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\RetryableHttpClient;
+use Symfony\Contracts\Cache\CacheInterface;
 
 abstract class YandexMarket
 {
-    private array $headers;
-
-    protected LoggerInterface $logger;
+    protected readonly LoggerInterface $logger;
 
     protected ?UserProfileUid $profile = null;
 
     private YaMarketAuthorizationToken|false $AuthorizationToken = false;
 
-
     public function __construct(
+        #[Autowire(env: 'APP_ENV')] private readonly string $environment,
         private readonly YaMarketTokenByProfileInterface $TokenByProfile,
+        private readonly AppCacheInterface $cache,
         LoggerInterface $yandexMarketLogger,
     ) {
-
         $this->logger = $yandexMarketLogger;
     }
 
@@ -97,10 +97,10 @@ abstract class YandexMarket
             }
         }
 
-        $this->headers = ['Authorization' => 'Bearer '.$this->AuthorizationToken->getToken()];
+        $headers['Authorization'] = sprintf('Bearer %s', $this->AuthorizationToken->getToken());
 
         return new RetryableHttpClient(
-            HttpClient::create(['headers' => $this->headers])
+            HttpClient::create(['headers' => $headers])
                 ->withOptions([
                     'base_uri' => 'https://api.partner.market.yandex.ru',
                     'verify_host' => false,
@@ -147,18 +147,18 @@ abstract class YandexMarket
         return ($price / 100 * $percent);
     }
 
-    protected function getCurlHeader(): string
+    /**
+     * Метод проверяет что окружение является PROD,
+     * тем самым позволяет выполнять операции запроса на сторонний сервис
+     * ТОЛЬКО в PROD окружении
+     */
+    protected function isExecuteEnvironment(): bool
     {
-        $this->headers['accept'] = 'application/json';
-        $this->headers['Content-Type'] = 'application/json; charset=utf-8';
-
-        return '-H "'.implode('" -H "', array_map(
-            function ($key, $value) {
-                return "$key: $value";
-            },
-            array_keys($this->headers),
-            $this->headers
-        )).'"';
+        return $this->environment === 'prod';
     }
 
+    protected function getCacheInit(string $namespace): CacheInterface
+    {
+        return $this->cache->init($namespace);
+    }
 }
