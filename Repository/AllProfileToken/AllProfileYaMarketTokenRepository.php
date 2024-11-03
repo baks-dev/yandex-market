@@ -100,7 +100,7 @@ final class AllProfileYaMarketTokenRepository implements AllProfileYaMarketToken
         $dbal->addSelect('personal.username AS attr');
 
         return $dbal
-            ->enableCache('yandex-market', 60)
+            ->enableCache('yandex-market', '1 minutes')
             ->fetchAllHydrate(UserProfileUid::class);
 
     }
