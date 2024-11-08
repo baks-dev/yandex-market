@@ -28,7 +28,7 @@
         <div class="d-flex gap-3">
 
             <div class="w-50">
-                {{ form_row(form.company, { label: 'Основной идентификатор компании', attr: { placeholder: 'ID кампании, campaign_id', class: 'w-100' } }) }}
+                {{ form_row(form.company, { label: 'Основной идентификатор компании', attr: { placeholder: 'ID компании, campaign_id', class: 'w-100' } }) }}
 
                 <div class="{{ form.vars.id }}" id='{{ form.vars.id }}'>
                     {% for company in form.extra %}

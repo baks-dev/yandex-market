@@ -124,7 +124,7 @@ class YandexMarketShopCommand extends Command
         {
 
             $this->io->writeln(sprintf('Идентификатор кабинета: %s', $shop->getBusiness()));
-            $this->io->writeln(sprintf('%s: Идентификатор кампании %s', $shop->getType(), $shop->getCompany()));
+            $this->io->writeln(sprintf('%s: Идентификатор компании %s', $shop->getType(), $shop->getCompany()));
             $this->io->writeln('');
 
 
