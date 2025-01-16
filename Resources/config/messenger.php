@@ -30,7 +30,7 @@ return static function(FrameworkConfig $framework) {
     /** Транспорт отправки сообщений */
     $messenger = $framework->messenger();
 
-    $messenger->transport('')
+    $messenger->transport('yandex-market')
         ->dsn('redis://%env(REDIS_PASSWORD)%@%env(REDIS_HOST)%:%env(REDIS_PORT)%?dbindex=%env(REDIS_TABLE)&auto_setup=true')
         ->options(['stream' => 'yandex-market'])
         ->failureTransport('failed-yandex-market')
