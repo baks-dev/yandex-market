@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ final class EditController extends AbstractController
         $YaMarketTokenDTO = new YaMarketTokenDTO();
 
         /** Запрещаем редактировать чужой токен */
-        if($this->getAdminFilterProfile() === null || $this->getProfileUid()?->equals($YaMarketTokenEvent->getProfile()) === true)
+        if($this->isAdmin() === true || $this->getProfileUid()?->equals($YaMarketTokenEvent->getProfile()) === true)
         {
             $YaMarketTokenEvent->getDto($YaMarketTokenDTO);
         }
@@ -79,7 +79,7 @@ final class EditController extends AbstractController
             $this->refreshTokenForm($form);
 
             /** Запрещаем редактировать чужой токен */
-            if($this->getAdminFilterProfile() && $this->getAdminFilterProfile()->equals($YaMarketTokenDTO->getProfile()) === false)
+            if($this->isAdmin() === false && $this->getProfileUid()?->equals($YaMarketTokenDTO->getProfile()) !== true)
             {
                 $this->addFlash('breadcrumb.edit', 'danger.edit', 'yandex-market.admin', '404');
                 return $this->redirectToReferer();
