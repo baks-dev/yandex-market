@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@ use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenForm;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenHandler;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -50,17 +49,14 @@ final class NewController extends AbstractController
 
         $YaMarketTokenDTO = new YaMarketTokenDTO();
 
-        if($this->getAdminFilterProfile())
-        {
-            $YaMarketTokenDTO->setProfile($this->getAdminFilterProfile());
-        }
+        $this->isAdmin() ?: $YaMarketTokenDTO->setProfile($this->getProfileUid());
 
         // Форма
-        $form = $this->createForm(YaMarketTokenForm::class, $YaMarketTokenDTO, [
-            'action' => $this->generateUrl('yandex-market:admin.newedit.new'),
-        ]);
-
-        $form->handleRequest($request);
+        $form = $this
+            ->createForm(YaMarketTokenForm::class, $YaMarketTokenDTO,
+                ['action' => $this->generateUrl('yandex-market:admin.newedit.new')]
+            )
+            ->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid() && $form->has('ya_market_token'))
         {
@@ -70,12 +66,21 @@ final class NewController extends AbstractController
 
             if($YaMarketToken instanceof YaMarketToken)
             {
-                $this->addFlash('breadcrumb.new', 'success.new', 'yandex-market.admin');
+                $this->addFlash(
+                    'breadcrumb.new',
+                    'success.new',
+                    'yandex-market.admin'
+                );
 
                 return $this->redirectToRoute('yandex-market:admin.index');
             }
 
-            $this->addFlash('breadcrumb.new', 'danger.new', 'yandex-market.admin', $YaMarketToken);
+            $this->addFlash(
+                'breadcrumb.new',
+                'danger.new',
+                'yandex-market.admin',
+                $YaMarketToken
+            );
 
             return $this->redirectToReferer();
         }

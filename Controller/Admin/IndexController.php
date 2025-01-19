@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -42,31 +42,32 @@ final class IndexController extends AbstractController
     #[Route('/admin/ya/market/tokens/{page<\d+>}', name: 'admin.index', methods: ['GET', 'POST'])]
     public function index(
         Request $request,
-        AllYaMarketTokenInterface $paginator,
+        AllYaMarketTokenInterface $AllYaMarketToken,
         int $page = 0,
     ): Response
     {
 
         // Поиск
         $search = new SearchDTO();
-        $searchForm = $this->createForm(
-            SearchForm::class,
-            $search,
-            ['action' => $this->generateUrl('yandex-market:admin.index')]
-        );
-
-        $searchForm->handleRequest($request);
-
-        $this->getAdminFilterProfile() ? $paginator->profile($this->getAdminFilterProfile()) : null;
+        $searchForm = $this
+            ->createForm(
+                SearchForm::class,
+                $search,
+                ['action' => $this->generateUrl('yandex-market:admin.index')]
+            )
+            ->handleRequest($request);
 
         // Получаем список
-        $AllYaMarket = $paginator
+
+        $this->isAdmin() ?: $AllYaMarketToken->profile($this->getProfileUid());
+
+        $query = $AllYaMarketToken
             ->search($search)
             ->findAllPaginator();
 
         return $this->render(
             [
-                'query' => $AllYaMarket,
+                'query' => $query,
                 'search' => $searchForm->createView(),
             ]
         );
