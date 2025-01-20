@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,44 +26,14 @@ declare(strict_types=1);
 namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit;
 
 use BaksDev\Core\Entity\AbstractHandler;
-use BaksDev\Core\Messenger\MessageDispatchInterface;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Messenger\YaMarketTokenMessage;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class YaMarketTokenHandler extends AbstractHandler
 {
-    //    private EntityManagerInterface $entityManager;
-    //
-    //    private ValidatorInterface $validator;
-    //
-    //    private LoggerInterface $logger;
-    //
-    //    private MessageDispatchInterface $messageDispatch;
-    //
-    //
-    //    public function __construct(
-    //        EntityManagerInterface $entityManager,
-    //        ValidatorInterface $validator,
-    //        LoggerInterface $yandexMarketLogger,
-    //        MessageDispatchInterface $messageDispatch,
-    //    )
-    //    {
-    //        $this->entityManager = $entityManager;
-    //        $this->validator = $validator;
-    //        $this->logger = $yandexMarketLogger;
-    //        $this->messageDispatch = $messageDispatch;
-    //
-    //    }
-
-
     /** @see YaMarket */
-    public function handle(
-        YaMarketTokenDTO $command
-    ): string|YaMarketToken
+    public function handle(YaMarketTokenDTO $command): string|YaMarketToken
     {
 
         $this->setCommand($command);
