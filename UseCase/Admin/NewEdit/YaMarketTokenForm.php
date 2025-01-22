@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -81,7 +81,7 @@ final class YaMarketTokenForm extends AbstractType
         $builder->add('business', NumberType::class);
 
         $builder->add('percent', IntegerType::class, [
-            'attr' => ['max' => 100, 'min' => 0]
+            'attr' => ['max' => 100, 'min' => -100]
         ]);
 
         $builder->add('active', CheckboxType::class, ['required' => false]);
