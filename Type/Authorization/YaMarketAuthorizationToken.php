@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -52,16 +52,23 @@ final class YaMarketAuthorizationToken
 
     /**
      * Торговая наценка
+     *
+     * Положительное либо отрицательное число в рублях, либо с процентом, пример:
+     *
+     * 100.1
+     * -100.1
+     * 10.1%
+     * -10.1%
+     *
      */
-    private int $percent;
-
+    private string $percent;
 
     public function __construct(
         UserProfileUid|string $profile,
         string $token,
         int|string $company,
         int|string $business,
-        int|string $percent = 0
+        ?string $percent = null
     )
     {
 
@@ -74,7 +81,7 @@ final class YaMarketAuthorizationToken
         $this->token = $token;
         $this->company = (int) $company;
         $this->business = (int) $business;
-        $this->percent = (int) $percent;
+        $this->percent = $percent ?: '0';
     }
 
     public function getProfile(): UserProfileUid
@@ -104,7 +111,7 @@ final class YaMarketAuthorizationToken
         return $this->business;
     }
 
-    public function getPercent(): int
+    public function getPercent(): string
     {
         return $this->percent;
     }

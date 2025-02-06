@@ -91,9 +91,8 @@ class YaMarketTokenEvent extends EntityEvent
      * Торговая наценка
      */
     #[Assert\NotBlank]
-    #[Assert\Range(min: -100, max: 100)]
-    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
-    private int $percent = 0;
+    #[ORM\Column(type: Types::STRING, options: ['default' => '0'])]
+    private ?string $percent = null;
 
     /**
      * Коллекция дополнительных идентификаторов
