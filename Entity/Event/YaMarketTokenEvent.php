@@ -91,10 +91,10 @@ class YaMarketTokenEvent extends EntityEvent
      * Торговая наценка
      */
     #[Assert\NotBlank]
-    #[ORM\Column(type: Types::STRING, options: ['default' => '0'])]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $percent = null;
 
-    /**
+    /**s
      * Коллекция дополнительных идентификаторов
      */
     #[ORM\OneToMany(targetEntity: YaMarketTokenExtra::class, mappedBy: 'event', cascade: ['all'])]
