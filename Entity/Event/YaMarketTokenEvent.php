@@ -94,7 +94,7 @@ class YaMarketTokenEvent extends EntityEvent
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $percent = null;
 
-    /**s
+    /**
      * Коллекция дополнительных идентификаторов
      */
     #[ORM\OneToMany(targetEntity: YaMarketTokenExtra::class, mappedBy: 'event', cascade: ['all'])]
