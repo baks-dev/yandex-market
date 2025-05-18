@@ -70,7 +70,6 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
     /**
      * Торговая наценка
      */
-    #[Assert\NotBlank]
     private ?string $percent = null;
 
     /**
@@ -180,12 +179,12 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
     /**
      * Percent
      */
-    public function getPercent(): string
+    public function getPercent(): ?string
     {
         return $this->percent;
     }
 
-    public function setPercent(string $percent): self
+    public function setPercent(?string $percent): self
     {
         $this->percent = $percent;
         return $this;

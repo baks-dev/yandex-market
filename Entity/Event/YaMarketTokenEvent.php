@@ -90,21 +90,20 @@ class YaMarketTokenEvent extends EntityEvent
     /**
      * Торговая наценка
      */
-    #[Assert\NotBlank]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $percent = null;
 
     /**
      * Коллекция дополнительных идентификаторов
      */
-    #[ORM\OneToMany(targetEntity: YaMarketTokenExtra::class, mappedBy: 'event', cascade: ['all'])]
+    #[ORM\OneToMany(targetEntity: YaMarketTokenExtra::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
     private Collection $extra;
 
 
     /**
      * Модификатор
      */
-    #[ORM\OneToOne(targetEntity: YaMarketTokenModify::class, mappedBy: 'event', cascade: ['all'])]
+    #[ORM\OneToOne(targetEntity: YaMarketTokenModify::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
     private YaMarketTokenModify $modify;
 
 
