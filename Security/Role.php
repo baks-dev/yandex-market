@@ -37,13 +37,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final class Role implements RoleInterface, MenuAdminInterface
 {
     /** Транспорт доставки заказов */
-    public const ROLE = 'ROLE_YA_MARKET_TOKEN';
+    public const string ROLE = 'ROLE_YA_MARKET_TOKEN';
+
+    public const string KEY = 'sJBnrgprR';
 
     public function getRole(): string
     {
         return self::ROLE;
     }
-
 
     /**
      * Добавляем раздел в меню администрирования.
@@ -53,6 +54,14 @@ final class Role implements RoleInterface, MenuAdminInterface
     public function getPath(): string
     {
         return 'yandex-market:admin.index';
+    }
+
+    /**
+     * Метод возвращает ключ раздела (для меню телеграм)
+     */
+    public function getPathKey(): string
+    {
+        return self::KEY;
     }
 
     /**
