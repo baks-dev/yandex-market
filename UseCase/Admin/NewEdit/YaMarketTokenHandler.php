@@ -50,9 +50,11 @@ final class YaMarketTokenHandler extends AbstractHandler
         $this->flush();
 
         /* Отправляем сообщение в шину */
-        $this->messageDispatch->dispatch(
+        $this->messageDispatch
+            ->addClearCacheOther('yandex-market')
+            ->dispatch(
             message: new YaMarketTokenMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
-            transport: 'yandex-market'
+                transport: 'yandex-market-products',
         );
 
         return $this->main;
