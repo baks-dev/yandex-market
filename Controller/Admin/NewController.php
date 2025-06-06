@@ -49,12 +49,19 @@ final class NewController extends AbstractController
 
         $YaMarketTokenDTO = new YaMarketTokenDTO();
 
-        $this->isAdmin() ?: $YaMarketTokenDTO->setProfile($this->getProfileUid());
+        if(true !== $this->isAdmin())
+        {
+            $YaMarketTokenDTO
+                ->getProfile()
+                ->setValue($this->getProfileUid());
+        }
 
         // Форма
         $form = $this
-            ->createForm(YaMarketTokenForm::class, $YaMarketTokenDTO,
-                ['action' => $this->generateUrl('yandex-market:admin.newedit.new')]
+            ->createForm(
+                type: YaMarketTokenForm::class,
+                data: $YaMarketTokenDTO,
+                options: ['action' => $this->generateUrl('yandex-market:admin.newedit.new')],
             )
             ->handleRequest($request);
 
@@ -69,7 +76,7 @@ final class NewController extends AbstractController
                 $this->addFlash(
                     'breadcrumb.new',
                     'success.new',
-                    'yandex-market.admin'
+                    'yandex-market.admin',
                 );
 
                 return $this->redirectToRoute('yandex-market:admin.index');
@@ -79,7 +86,7 @@ final class NewController extends AbstractController
                 'breadcrumb.new',
                 'danger.new',
                 'yandex-market.admin',
-                $YaMarketToken
+                $YaMarketToken,
             );
 
             return $this->redirectToReferer();

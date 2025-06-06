@@ -27,8 +27,10 @@ namespace BaksDev\Yandex\Market\Api;
 
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Yandex\Market\Repository\YaMarketTokenByProfile\YaMarketTokenByProfileInterface;
+use BaksDev\Yandex\Market\Entity\YaMarketToken;
+use BaksDev\Yandex\Market\Repository\YaMarketToken\YaMarketTokenByProfileInterface;
 use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 use DomainException;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
@@ -40,9 +42,14 @@ use Symfony\Contracts\Cache\CacheInterface;
 
 abstract class YandexMarket
 {
-    protected ?UserProfileUid $profile = null;
+    private YaMarketTokenUid|false $identifier = false;
 
     private YaMarketAuthorizationToken|false $AuthorizationToken = false;
+
+    //private YaMarketTokenUid|false $identifier = false;
+
+    //protected UserProfileUid|false $profile = false;
+
 
     public function __construct(
         #[Autowire(env: 'APP_ENV')] private readonly string $environment,
@@ -51,18 +58,26 @@ abstract class YandexMarket
         private readonly AppCacheInterface $cache,
     ) {}
 
-
-    public function profile(UserProfileUid|string $profile): self
+    public function forTokenIdentifier(YaMarketToken|YaMarketTokenUid $identifier): self
     {
-        if(is_string($profile))
+        if($identifier instanceof YaMarketToken)
         {
-            $profile = new UserProfileUid($profile);
+            $identifier = $identifier->getId();
         }
 
-        $this->profile = $profile;
+        $this->AuthorizationToken = $this->TokenByProfile
+            ->forToken($identifier)
+            ->find();
 
-        $this->AuthorizationToken = $this->TokenByProfile->getToken($this->profile);
+        $this->identifier = $identifier;
 
+        return $this;
+    }
+
+
+    /** @deprecated */
+    public function profile(): self
+    {
         return $this;
     }
 
@@ -71,70 +86,40 @@ abstract class YandexMarket
         if($AuthorizationToken !== false)
         {
             $this->AuthorizationToken = $AuthorizationToken;
-            $this->profile = $AuthorizationToken->getProfile();
         }
 
         if($this->AuthorizationToken === false)
         {
-            if(!$this->profile)
+            if(false === ($this->identifier instanceof YaMarketTokenUid))
             {
-                $this->logger->critical('Не указан идентификатор профиля пользователя через вызов метода profile', [self::class.':'.__LINE__]);
+                $this->logger->critical('Не указан идентификатор токена через вызов метода forTokenIdentifier', [self::class.':'.__LINE__]);
 
                 throw new InvalidArgumentException(
-                    'Не указан идентификатор профиля пользователя через вызов метода profile: ->profile($UserProfileUid)'
+                    'Не указан идентификатор токена через вызов метода profile: ->forTokenIdentifier($UserProfileUid)',
                 );
             }
 
-            $this->AuthorizationToken = $this->TokenByProfile->getToken($this->profile);
+            $this->AuthorizationToken = $this->TokenByProfile
+                ->forToken($this->identifier)
+                ->find();
 
-            if(!$this->AuthorizationToken)
+            if(false === ($this->AuthorizationToken instanceof YaMarketAuthorizationToken))
             {
-                throw new DomainException(sprintf('Токен авторизации Yandex Market не найден: %s', $this->profile));
+                throw new DomainException(sprintf('Токен авторизации Yandex Market не найден: %s', $this->identifier));
             }
         }
 
-        $headers['Authorization'] = sprintf('Bearer %s', $this->AuthorizationToken->getToken());
+        $headers['Api-Key'] = $this->AuthorizationToken->getToken();
 
         return new RetryableHttpClient(
             HttpClient::create(['headers' => $headers])
                 ->withOptions([
                     'base_uri' => 'https://api.partner.market.yandex.ru',
                     'verify_host' => false,
-                ])
+                ]),
         );
     }
 
-    /**
-     * Profile
-     */
-    protected function getProfile(): ?UserProfileUid
-    {
-        return $this->profile;
-    }
-
-    protected function getBusiness(): int
-    {
-        return $this->AuthorizationToken->getBusiness();
-    }
-
-    /** Возвращает основной идентификатор компании */
-    public function getCompany(): int
-    {
-        return $this->AuthorizationToken->getCompany();
-    }
-
-    /** Присваивает дополнительный идентификатор компании (EXTRA) */
-    public function setExtraCompany(int $company): self
-    {
-        $this->AuthorizationToken->setExtraCompany($company);
-        return $this;
-    }
-
-
-    public function getPercent(): string
-    {
-        return $this->AuthorizationToken->getPercent();
-    }
 
     /**
      * Метод проверяет что окружение является PROD,
@@ -149,5 +134,40 @@ abstract class YandexMarket
     protected function getCacheInit(string $namespace): CacheInterface
     {
         return $this->cache->init($namespace);
+    }
+
+    /**
+     * Profile
+     */
+
+    protected function getProfile(): ?UserProfileUid
+    {
+        return $this->AuthorizationToken->getProfile();
+    }
+
+    protected function getBusiness(): int
+    {
+        return $this->AuthorizationToken->getBusiness();
+    }
+
+    /** Возвращает основной идентификатор компании */
+    protected function getCompany(): int
+    {
+        return $this->AuthorizationToken->getCompany();
+    }
+
+    protected function getPercent(): string
+    {
+        return $this->AuthorizationToken->getPercent();
+    }
+
+    protected function getVat(): string|false
+    {
+        return $this->AuthorizationToken->getVat();
+    }
+
+    protected function isCard(): bool
+    {
+        return $this->AuthorizationToken->isCard();
     }
 }

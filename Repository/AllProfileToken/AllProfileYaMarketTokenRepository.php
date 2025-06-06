@@ -32,6 +32,8 @@ use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use BaksDev\Yandex\Market\Entity\Event\Active\YaMarketTokenActive;
+use BaksDev\Yandex\Market\Entity\Event\Profile\YaMarketTokenProfile;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use Generator;
@@ -50,8 +52,10 @@ final class AllProfileYaMarketTokenRepository implements AllProfileYaMarketToken
 
     /**
      * Метод возвращает идентификаторы профилей всех добавленных токенов
+     *
+     * @return Generator<int, UserProfileUid>|false
      */
-    public function findAll(): Generator
+    public function findAll(): Generator|false
     {
         $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
 
@@ -61,18 +65,26 @@ final class AllProfileYaMarketTokenRepository implements AllProfileYaMarketToken
         {
             $dbal->join(
                 'token',
-                YaMarketTokenEvent::class,
-                'event',
-                'event.id = token.event AND event.active = true',
+                YaMarketTokenActive::class,
+                'active',
+                'active.event = token.event AND active.value IS TRUE',
             );
         }
+
+        $dbal
+            ->leftJoin(
+                'token',
+                YaMarketTokenProfile::class,
+                'profile',
+                'profile.event = token.event',
+            );
 
         $dbal
             ->join(
                 'token',
                 UserProfileInfo::class,
                 'users_profile_info',
-                'users_profile_info.profile = token.id AND users_profile_info.status = :status',
+                'users_profile_info.profile = profile.value AND users_profile_info.status = :status',
             )
             ->setParameter(
                 'status',
@@ -96,8 +108,10 @@ final class AllProfileYaMarketTokenRepository implements AllProfileYaMarketToken
         );
 
         /** Параметры конструктора объекта гидрации */
-        $dbal->addSelect('token.id AS value');
+        $dbal->addSelect('profile.value AS value');
         $dbal->addSelect('personal.username AS attr');
+
+        $dbal->allGroupByExclude();
 
         return $dbal
             ->enableCache('yandex-market', '1 minutes')

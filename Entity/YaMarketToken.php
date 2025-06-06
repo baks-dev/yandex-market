@@ -22,6 +22,7 @@ use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -35,8 +36,8 @@ class YaMarketToken
     #[Assert\NotBlank]
     #[Assert\Uuid]
     #[ORM\Id]
-    #[ORM\Column(type: UserProfileUid::TYPE)]
-    private UserProfileUid $id;
+    #[ORM\Column(type: YaMarketTokenUid::TYPE)]
+    private YaMarketTokenUid $id;
 
     /** ID События */
     #[Assert\NotBlank]
@@ -44,13 +45,12 @@ class YaMarketToken
     #[ORM\Column(type: YaMarketTokenEventUid::TYPE, unique: true)]
     private YaMarketTokenEventUid $event;
 
-
-    public function __construct(UserProfile|UserProfileUid $profile)
+    public function __construct()
     {
-        $this->id = $profile instanceof UserProfile ? $profile->getId() : $profile;
+        $this->id = new YaMarketTokenUid();
     }
 
-    public function getId(): UserProfileUid
+    public function getId(): YaMarketTokenUid
     {
         return $this->id;
     }

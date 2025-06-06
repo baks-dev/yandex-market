@@ -26,29 +26,47 @@ declare(strict_types=1);
 namespace BaksDev\Yandex\Market\Repository\YaMarketTokenCurrentEvent;
 
 use BaksDev\Core\Doctrine\ORMQueryBuilder;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 
-final readonly class YaMarketTokenCurrentEventRepository implements YaMarketTokenCurrentEventInterface
+final class YaMarketTokenCurrentEventRepository implements YaMarketTokenCurrentEventInterface
 {
-    public function __construct(private ORMQueryBuilder $ORMQueryBuilder) {}
+    private YaMarketTokenUid|false $main;
+
+    public function __construct(private readonly ORMQueryBuilder $ORMQueryBuilder) {}
+
+    public function forMain(YaMarketToken|YaMarketTokenUid $main): self
+    {
+        if($main instanceof YaMarketToken)
+        {
+            $main = $main->getId();
+        }
+
+        $this->main = $main;
+
+        return $this;
+    }
 
     /** Метод возвращает активное событие токена профиля */
-    public function findByProfile(UserProfileUid|string $profile): YaMarketTokenEvent|false
+    public function find(): YaMarketTokenEvent|false
     {
-        if(is_string($profile))
+        if(false === ($this->main instanceof YaMarketTokenUid))
         {
-            $profile = new UserProfileUid($profile);
+            throw new \InvalidArgumentException('Invalid Argument YaMarketToken');
         }
 
         $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);
 
-
         $orm
             ->from(YaMarketToken::class, 'main')
-            ->where('main.id = :profile')
-            ->setParameter('profile', $profile, UserProfileUid::TYPE);
+            ->where('main.id = :main')
+            ->setParameter(
+                key: 'main',
+                value: $this->main,
+                type: YaMarketTokenUid::TYPE);
 
 
         $orm
@@ -57,7 +75,7 @@ final readonly class YaMarketTokenCurrentEventRepository implements YaMarketToke
                 YaMarketTokenEvent::class,
                 'event',
                 'WITH',
-                'event.id = main.event'
+                'event.id = main.event',
             );
 
         return $orm->getQuery()->getOneOrNullResult() ?: false;

@@ -27,6 +27,7 @@ namespace BaksDev\Yandex\Market\Api\Tests;
 
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Yandex\Market\Api\AllShops\YandexMarketShopDTO;
 use BaksDev\Yandex\Market\Api\AllShops\YandexMarketShopRequest;
 use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,29 +45,83 @@ class YandexMarketTest extends KernelTestCase
     public static function setUpBeforeClass(): void
     {
         self::$Authorization = new YaMarketAuthorizationToken(
-            new UserProfileUid(),
+            UserProfileUid::TEST,
             $_SERVER['TEST_YANDEX_MARKET_TOKEN'],
             $_SERVER['TEST_YANDEX_MARKET_COMPANY'],
-            $_SERVER['TEST_YANDEX_MARKET_BUSINESS']
+            $_SERVER['TEST_YANDEX_MARKET_BUSINESS'],
+
         );
     }
 
     public function testUseCase(): void
     {
 
+        /**
+         * FBS
+         */
+
+        $AuthorizationFBS = new YaMarketAuthorizationToken(
+            UserProfileUid::TEST,
+            $_SERVER['TEST_YANDEX_MARKET_TOKEN'],
+            $_SERVER['TEST_YANDEX_MARKET_COMPANY'],
+            $_SERVER['TEST_YANDEX_MARKET_BUSINESS'],
+
+        );
+
+
         /** @var YandexMarketShopRequest $YandexMarketShopRequest */
         $YandexMarketShopRequest = self::getContainer()->get(YandexMarketShopRequest::class);
-        $YandexMarketShopRequest->TokenHttpClient(self::$Authorization);
+        $YandexMarketShopRequest->TokenHttpClient($AuthorizationFBS);
 
         $shops = $YandexMarketShopRequest->findAll();
 
-        foreach($shops as $shop)
+        self::assertTrue($shops->valid());
+        self::assertInstanceOf(YandexMarketShopDTO::class, $shops->current());
+
+        /** @var YandexMarketShopDTO $YandexMarketShopDTO */
+
+        foreach($shops as $YandexMarketShopDTO)
         {
-            $YandexMarketShopRequest->setExtraCompany($shop->getCompany());
-            self::assertEquals($shop->getCompany(), $YandexMarketShopRequest->getCompany());
+            self::assertInstanceOf(UserProfileUid::class, $YandexMarketShopDTO->getProfile());
+            self::assertIsInt($YandexMarketShopDTO->getCompany());
+            self::assertIsInt($YandexMarketShopDTO->getClient());
+            self::assertIsInt($YandexMarketShopDTO->getBusiness());
+            self::assertIsString($YandexMarketShopDTO->getName());
+            self::assertIsString($YandexMarketShopDTO->getType());
         }
 
-        self::assertTrue(true);
+
+        /**
+         * DBS
+         */
+
+        $AuthorizationDBS = new YaMarketAuthorizationToken(
+            UserProfileUid::TEST,
+            $_SERVER['TEST_YANDEX_MARKET_TOKEN_DBS'],
+            $_SERVER['TEST_YANDEX_MARKET_COMPANY_DBS'],
+            $_SERVER['TEST_YANDEX_MARKET_BUSINESS_DBS'],
+
+        );
+
+        /** @var YandexMarketShopRequest $YandexMarketShopRequest */
+        $YandexMarketShopRequest = self::getContainer()->get(YandexMarketShopRequest::class);
+        $YandexMarketShopRequest->TokenHttpClient($AuthorizationDBS);
+
+        $shops = $YandexMarketShopRequest->findAll();
+
+        self::assertTrue($shops->valid());
+        self::assertInstanceOf(YandexMarketShopDTO::class, $shops->current());
+
+        /** @var YandexMarketShopDTO $YandexMarketShopDTO */
+        foreach($shops as $YandexMarketShopDTO)
+        {
+            self::assertInstanceOf(UserProfileUid::class, $YandexMarketShopDTO->getProfile());
+            self::assertIsInt($YandexMarketShopDTO->getCompany());
+            self::assertIsInt($YandexMarketShopDTO->getClient());
+            self::assertIsInt($YandexMarketShopDTO->getBusiness());
+            self::assertIsString($YandexMarketShopDTO->getName());
+            self::assertIsString($YandexMarketShopDTO->getType());
+        }
 
     }
 

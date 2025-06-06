@@ -28,6 +28,7 @@ namespace BaksDev\Yandex\Market\Commands;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Api\AllShops\YandexMarketShopRequest;
 use BaksDev\Yandex\Market\Repository\AllProfileToken\AllProfileYaMarketTokenInterface;
+use BaksDev\Yandex\Market\Repository\YaMarketTokensByProfile\YaMarketTokensByProfileInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -38,7 +39,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'baks:yandex:market:shops',
-    description: 'Метод получает идентификаторы магазинов'
+    description: 'Метод получает идентификаторы магазинов',
+    aliases: ['baks:yandex:shops']
 )]
 class YandexMarketShopCommand extends Command
 {
@@ -46,7 +48,8 @@ class YandexMarketShopCommand extends Command
 
     public function __construct(
         private readonly AllProfileYaMarketTokenInterface $allProfileYaMarketToken,
-        private readonly YandexMarketShopRequest $yandexMarketShopRequest
+        private readonly YandexMarketShopRequest $yandexMarketShopRequest,
+        private readonly YaMarketTokensByProfileInterface $YaMarketTokensByProfile
     )
     {
         parent::__construct();
@@ -61,9 +64,21 @@ class YandexMarketShopCommand extends Command
             ->onlyActiveToken()
             ->findAll();
 
+        if(false === $profiles || false === $profiles->valid())
+        {
+            $this->io->warning('Активных профилей пользователя не найден');
+            return Command::FAILURE;
+        }
+
         $profiles = iterator_to_array($profiles);
 
+
         $helper = $this->getHelper('question');
+
+
+        /**
+         * Интерактивная форма списка профилей
+         */
 
         $questions[] = 'Все';
 
@@ -72,62 +87,93 @@ class YandexMarketShopCommand extends Command
             $questions[] = $quest->getAttr();
         }
 
+        $questions['-'] = 'Выйти';
+
         $question = new ChoiceQuestion(
-            'Профиль пользователя',
+            'Профиль пользователя (Ctrl+C чтобы выйти)',
             $questions,
-            0
+            '0',
         );
 
-        $profileName = $helper->ask($input, $output, $question);
+        $key = $helper->ask($input, $output, $question);
+        $key = $question->getChoices()[$key] ?? false;
 
-        if($profileName === 'Все')
+        /**
+         *  Выходим без выполненного запроса
+         */
+
+        if($key === '-' || $key === 'Выйти')
+        {
+            return Command::SUCCESS;
+        }
+
+
+        /**
+         * Выполняем все с возможностью асинхронно в очереди
+         */
+
+        if($key === '0' || $key === 'Все')
         {
             /** @var UserProfileUid $profile */
             foreach($profiles as $profile)
             {
                 $this->shops($profile);
             }
+
+            return Command::SUCCESS;
         }
-        else
+
+        /**
+         * Выполняем определенный профиль
+         */
+
+        $UserProfileUid = null;
+
+        foreach($profiles as $profile)
         {
-            $UserProfileUid = null;
-
-            foreach($profiles as $profile)
+            if($profile->getAttr() === $key)
             {
-                if($profile->getAttr() === $questions[$profileName])
-                {
-                    /* Присваиваем профиль пользователя */
-                    $UserProfileUid = $profile;
-                    break;
-                }
+                /* Присваиваем профиль пользователя */
+                $UserProfileUid = $profile;
+                break;
             }
-
-            if($UserProfileUid)
-            {
-                $this->shops($UserProfileUid);
-            }
-
         }
 
-        $this->io->success('Заказы успешно обновлены');
+        if($UserProfileUid)
+        {
+            $this->shops($UserProfileUid);
+            return Command::SUCCESS;
+        }
 
-        return Command::SUCCESS;
+        $this->io->warning('Профиль пользователя не найден');
+        return Command::FAILURE;
+
     }
 
     public function shops(UserProfileUid $profile)
     {
-        $shops = $this->yandexMarketShopRequest
-            ->profile($profile)
-            ->findAll();
+        $tokensByProfile = $this->YaMarketTokensByProfile->findAll($profile);
 
-        foreach($shops as $shop)
+        if(false === $tokensByProfile || false === $tokensByProfile->valid())
         {
+            $this->io->error('Токенов профиля пользователя не найдено!');
+            return;
+        }
 
-            $this->io->writeln(sprintf('Идентификатор кабинета: %s', $shop->getBusiness()));
-            $this->io->writeln(sprintf('%s: Идентификатор компании %s', $shop->getType(), $shop->getCompany()));
-            $this->io->writeln('');
+        foreach($tokensByProfile as $token)
+        {
+            $shops = $this->yandexMarketShopRequest
+                ->forTokenIdentifier($token)
+                ->findAll();
 
+            foreach($shops as $shop)
+            {
+                $this->io->writeln(sprintf('Идентификатор кабинета: %s', $shop->getName()));
+                $this->io->writeln(sprintf('Идентификатор кабинета: %s', $shop->getBusiness()));
+                $this->io->writeln(sprintf('%s: Идентификатор компании %s', $shop->getType(), $shop->getCompany()));
+                $this->io->writeln(PHP_EOL);
 
+            }
         }
     }
 

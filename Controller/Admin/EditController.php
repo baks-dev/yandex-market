@@ -50,38 +50,45 @@ final class EditController extends AbstractController
         YaMarketTokenHandler $YaMarketTokenHandler,
     ): Response
     {
-
         $YaMarketTokenDTO = new YaMarketTokenDTO();
 
         /** Запрещаем редактировать чужой токен */
-        if($this->isAdmin() === true || $this->getProfileUid()?->equals($YaMarketTokenEvent->getProfile()) === true)
+        if(true !== $this->isAdmin() || false === $YaMarketTokenEvent->equalsTokenProfile($this->getProfileUid()))
         {
             $YaMarketTokenEvent->getDto($YaMarketTokenDTO);
         }
 
         if($request->getMethod() === 'GET')
         {
-            $YaMarketTokenDTO->hiddenToken();
+            $YaMarketTokenDTO->getToken()->hiddenToken();
         }
 
         // Форма
-        $form = $this->createForm(YaMarketTokenForm::class, $YaMarketTokenDTO, [
-            'action' => $this->generateUrl(
-                'yandex-market:admin.newedit.edit',
-                ['id' => $YaMarketTokenDTO->getEvent() ?: new YaMarketTokenEventUid()]
-            ),
-        ]);
-
-        $form->handleRequest($request);
+        $form = $this
+            ->createForm(
+                type: YaMarketTokenForm::class,
+                data: $YaMarketTokenDTO,
+                options: ['action' => $this->generateUrl(
+                    'yandex-market:admin.newedit.edit',
+                    ['id' => $YaMarketTokenDTO->getEvent() ?: new YaMarketTokenEventUid()],
+                )],
+            )
+            ->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid() && $form->has('ya_market_token'))
         {
             $this->refreshTokenForm($form);
 
             /** Запрещаем редактировать чужой токен */
-            if($this->isAdmin() === false && $this->getProfileUid()?->equals($YaMarketTokenDTO->getProfile()) !== true)
+            if($this->isAdmin() === false && $this->getProfileUid()?->equals($YaMarketTokenDTO->getProfile()->getValue()) !== true)
             {
-                $this->addFlash('breadcrumb.edit', 'danger.edit', 'yandex-market.admin', '404');
+                $this->addFlash(
+                    'breadcrumb.edit',
+                    'danger.edit',
+                    'yandex-market.admin',
+                    '404',
+                );
+
                 return $this->redirectToReferer();
             }
 
@@ -94,7 +101,12 @@ final class EditController extends AbstractController
                 return $this->redirectToRoute('yandex-market:admin.index');
             }
 
-            $this->addFlash('breadcrumb.edit', 'danger.edit', 'yandex-market.admin', $YaMarketToken);
+            $this->addFlash(
+                'breadcrumb.edit',
+                'danger.edit',
+                'yandex-market.admin',
+                $YaMarketToken,
+            );
 
             return $this->redirectToReferer();
         }

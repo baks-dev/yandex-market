@@ -27,13 +27,18 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
 /**
  * Метод возвращает дополнительные идентификаторы компании профиля пользователя
+ *
+ * @deprecated
  */
 interface YaMarketTokenExtraCompanyInterface
 {
+    /** @deprecated */
     public function profile(UserProfileUid|string $profile): self;
 
     /**
      * Метод возвращает дополнительные идентификаторы компании профиля пользователя
+     *
+     * @deprecated
      */
     public function execute(): array|false;
 }

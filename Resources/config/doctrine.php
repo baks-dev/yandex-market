@@ -24,16 +24,16 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use BaksDev\Yandex\Market\BaksDevYandexMarketBundle;
-use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyType;
-use BaksDev\Yandex\Market\Type\Company\YaMarketTokenCompanyUid;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventType;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenType;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 use Symfony\Config\DoctrineConfig;
 
 return static function(DoctrineConfig $doctrine, ContainerConfigurator $configurator): void {
 
+    $doctrine->dbal()->type(YaMarketTokenUid::TYPE)->class(YaMarketTokenType::class);
     $doctrine->dbal()->type(YaMarketTokenEventUid::TYPE)->class(YaMarketTokenEventType::class);
-    $doctrine->dbal()->type(YaMarketTokenCompanyUid::TYPE)->class(YaMarketTokenCompanyType::class);
 
     $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
 
@@ -45,3 +45,4 @@ return static function(DoctrineConfig $doctrine, ContainerConfigurator $configur
         ->prefix(BaksDevYandexMarketBundle::NAMESPACE.'\\Entity')
         ->alias('yandex-market');
 };
+

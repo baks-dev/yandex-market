@@ -29,6 +29,7 @@ use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenExtraDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenHandler;
@@ -49,7 +50,7 @@ class YaMarketTokenNewTest extends KernelTestCase
         $em = self::getContainer()->get(EntityManagerInterface::class);
 
         $main = $em->getRepository(YaMarketToken::class)
-            ->findOneBy(['id' => UserProfileUid::TEST]);
+            ->findOneBy(['id' => YaMarketTokenUid::TEST]);
 
         if($main)
         {
@@ -57,7 +58,7 @@ class YaMarketTokenNewTest extends KernelTestCase
         }
 
         $event = $em->getRepository(YaMarketTokenEvent::class)
-            ->findBy(['profile' => UserProfileUid::TEST]);
+            ->findBy(['main' => YaMarketTokenUid::TEST]);
 
         foreach($event as $remove)
         {

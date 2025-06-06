@@ -27,28 +27,51 @@ namespace BaksDev\Yandex\Market\Type\Authorization;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
-final class YaMarketAuthorizationToken
+final  class YaMarketAuthorizationToken
 {
+    public function __construct(
+        private readonly string $profile,
+        private readonly string $token,
+        private readonly int|string $company,
+        private readonly int|string $business,
+        private readonly bool $card,
+
+        private ?string $percent = null,
+        private ?string $vat = null
+    ) {}
+
     /**
      * ID настройки (профиль пользователя)
      */
-    private readonly UserProfileUid $profile;
+    public function getProfile(): UserProfileUid
+    {
+        return new UserProfileUid($this->profile);
+    }
 
     /**
      * Токен
      */
-    private readonly string $token;
-
-    /**
-     * Идентификатор кабинета
-     */
-    private readonly int $business;
+    public function getToken(): string
+    {
+        return $this->token;
+    }
 
     /**
      * Идентификатор компании
      */
-    private int $company;
+    public function getCompany(): int
+    {
+        return $this->company;
+    }
 
+
+    /**
+     * Идентификатор кабинета
+     */
+    public function getBusiness(): int
+    {
+        return $this->business;
+    }
 
     /**
      * Торговая наценка
@@ -61,58 +84,34 @@ final class YaMarketAuthorizationToken
      * -10.1%
      *
      */
-    private string $percent;
-
-    public function __construct(
-        UserProfileUid|string $profile,
-        string $token,
-        int|string $company,
-        int|string $business,
-        ?string $percent = null
-    )
-    {
-
-        if(is_string($profile))
-        {
-            $profile = new UserProfileUid($profile);
-        }
-
-        $this->profile = $profile;
-        $this->token = $token;
-        $this->company = (int) $company;
-        $this->business = (int) $business;
-        $this->percent = $percent ?: '0';
-    }
-
-    public function getProfile(): UserProfileUid
-    {
-        return $this->profile;
-    }
-
-    public function getToken(): string
-    {
-        return $this->token;
-    }
-
-    public function getCompany(): int
-    {
-        return $this->company;
-    }
-
-    public function setExtraCompany(int $company): self
-    {
-        $this->company = $company;
-        return $this;
-    }
-
-
-    public function getBusiness(): int
-    {
-        return $this->business;
-    }
-
     public function getPercent(): string
     {
-        return $this->percent;
+        return $this->percent ?: '0';
+    }
+
+    public function isCard(): bool
+    {
+        return $this->card === true;
+    }
+
+    /**
+     * Если параметр не указан, используется НДС, установленный в кабинете.
+     */
+    public function getVat(): string|false
+    {
+        if(is_null($this->vat))
+        {
+            return false;
+        }
+
+        return match (true)
+        {
+            $this->vat === 0 => 5, // 5 — НДС 0%. Например, используется при продаже товаров, вывезенных в таможенной процедуре экспорта, или при оказании услуг по международной перевозке товаров.
+            $this->vat === 5 => 10, // 10 — НДС 5%. НДС для упрощенной системы налогообложения (УСН).
+            $this->vat === 7 => 11, // 11 — НДС 7%. НДС для упрощенной системы налогообложения (УСН).
+            $this->vat === 10 => 2, // 2 — НДС 10%. Например, используется при реализации отдельных продовольственных и медицинских товаров.
+            $this->vat === 20 => 7, // 7 — НДС 20%. Основной НДС с 2019 года.
+            default => false,
+        };
     }
 }

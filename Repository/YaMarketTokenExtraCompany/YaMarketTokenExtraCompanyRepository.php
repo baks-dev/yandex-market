@@ -25,60 +25,24 @@ declare(strict_types=1);
 
 namespace BaksDev\Yandex\Market\Repository\YaMarketTokenExtraCompany;
 
-use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Yandex\Market\Entity\Company\YaMarketTokenExtra;
-use BaksDev\Yandex\Market\Entity\YaMarketToken;
-use InvalidArgumentException;
 
+/** @deprecated */
 final class YaMarketTokenExtraCompanyRepository implements YaMarketTokenExtraCompanyInterface
 {
-    private UserProfileUid|false $profile = false;
-
-    public function __construct(private readonly DBALQueryBuilder $DBALQueryBuilder) {}
-
+    /** @deprecated */
     public function profile(UserProfileUid|string $profile): self
     {
-        if(is_string($profile))
-        {
-            $profile = new UserProfileUid($profile);
-        }
-
-        $this->profile = $profile;
-
         return $this;
     }
 
     /**
      * Метод возвращает дополнительные идентификаторы компании профиля пользователя
+     *
+     * @deprecated
      */
     public function execute(): array|false
     {
-        if($this->profile === false)
-        {
-            throw new InvalidArgumentException('Invalid Argument profile');
-        }
-
-        $dbal = $this->DBALQueryBuilder->createQueryBuilder(self::class);
-
-        $dbal
-            ->from(YaMarketToken::class, 'token')
-            ->where('token.id = :profile')
-            ->setParameter('profile', $this->profile, UserProfileUid::TYPE);
-
-
-        $dbal
-            ->addSelect('extra.company')
-            ->join(
-                'token',
-                YaMarketTokenExtra::class,
-                'extra',
-                'extra.event = token.event'
-            );
-
-
-        return $dbal
-            ->enableCache('yandex-market', 3600)
-            ->fetchAllAssociative() ?: false;
+        return false;
     }
 }

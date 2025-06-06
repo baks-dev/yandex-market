@@ -24,13 +24,25 @@
 namespace BaksDev\Yandex\Market\Entity\Event;
 
 use BaksDev\Core\Entity\EntityEvent;
+use BaksDev\Core\Type\Ip\IpAddress;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Yandex\Market\Entity\Company\YaMarketTokenExtra;
-use BaksDev\Yandex\Market\Entity\Modify\YaMarketTokenModify;
+use BaksDev\Yandex\Market\Entity\Event\Active\YaMarketTokenActive;
+use BaksDev\Yandex\Market\Entity\Event\Business\YaMarketTokenBusiness;
+use BaksDev\Yandex\Market\Entity\Event\Card\YaMarketTokenCard;
+use BaksDev\Yandex\Market\Entity\Event\Company\YaMarketTokenCompany;
+use BaksDev\Yandex\Market\Entity\Event\Modify\Action\YaMarketTokenModifyAction;
+use BaksDev\Yandex\Market\Entity\Event\Modify\DateTime\YaMarketTokenModifyDateTime;
+use BaksDev\Yandex\Market\Entity\Event\Modify\IpAddress\YaMarketTokenModifyIpAddress;
+use BaksDev\Yandex\Market\Entity\Event\Modify\User\YaMarketTokenModifyUser;
+use BaksDev\Yandex\Market\Entity\Event\Modify\UserAgent\YaMarketTokenModifyUserAgent;
+use BaksDev\Yandex\Market\Entity\Event\Percent\YaMarketTokenPercent;
+use BaksDev\Yandex\Market\Entity\Event\Profile\YaMarketTokenProfile;
+use BaksDev\Yandex\Market\Entity\Event\Token\YaMarketTokenValue;
+use BaksDev\Yandex\Market\Entity\Event\Type\YaMarketTokenType;
+use BaksDev\Yandex\Market\Entity\Event\Vat\YaMarketTokenVat;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -39,7 +51,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'ya_market_token_event')]
-#[ORM\Index(columns: ['profile', 'active'])]
 class YaMarketTokenEvent extends EntityEvent
 {
     /**
@@ -56,61 +67,104 @@ class YaMarketTokenEvent extends EntityEvent
      */
     #[Assert\NotBlank]
     #[Assert\Uuid]
-    #[ORM\Column(type: UserProfileUid::TYPE)]
-    private readonly UserProfileUid $profile;
+    #[ORM\Column(type: YaMarketTokenUid::TYPE)]
+    private YaMarketTokenUid $main;
+
+
+    /**
+     * ID настройки (профиль пользователя)
+     */
+    #[ORM\OneToOne(targetEntity: YaMarketTokenProfile::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenProfile $profile = null;
+
+
+    /**
+     * Тип (схема работы) токена
+     */
+    #[ORM\OneToOne(targetEntity: YaMarketTokenType::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenType $type = null;
 
     /**
      * Токен
      */
-    #[Assert\NotBlank]
-    #[ORM\Column(type: Types::TEXT)]
-    private string $token;
+    #[ORM\OneToOne(targetEntity: YaMarketTokenValue::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenValue $token = null;
+
 
     /**
      * Статус true = активен / false = заблокирован
      */
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private bool $active = true;
+    #[ORM\OneToOne(targetEntity: YaMarketTokenActive::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenActive $active = null;
 
 
     /**
      * Идентификатор компании
      */
-    #[Assert\NotBlank]
-    #[ORM\Column(type: Types::INTEGER)] // 85604808
-    private int $company;
+    #[ORM\OneToOne(targetEntity: YaMarketTokenCompany::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenCompany $company = null;
+
 
     /**
      * Идентификатор кабинета
      */
-    #[Assert\NotBlank]
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $business;
+    #[ORM\OneToOne(targetEntity: YaMarketTokenBusiness::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenBusiness $business = null;
 
     /**
      * Торговая наценка
      */
-    #[ORM\Column(type: Types::STRING, nullable: true)]
-    private ?string $percent = null;
+    #[ORM\OneToOne(targetEntity: YaMarketTokenPercent::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenPercent $percent = null;
 
     /**
-     * Коллекция дополнительных идентификаторов
+     * НДС, применяемый для товара
      */
-    #[ORM\OneToMany(targetEntity: YaMarketTokenExtra::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
-    private Collection $extra;
+    #[ORM\OneToOne(targetEntity: YaMarketTokenVat::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenVat $vat = null;
+
+
+    /**
+     * Обновлять карточки токеном
+     */
+    #[ORM\OneToOne(targetEntity: YaMarketTokenCard::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenCard $card = null;
 
 
     /**
      * Модификатор
      */
-    #[ORM\OneToOne(targetEntity: YaMarketTokenModify::class, mappedBy: 'event', cascade: ['all'], fetch: 'EAGER')]
-    private YaMarketTokenModify $modify;
 
+    /** YaMarketTokenModifyAction */
+    #[ORM\OneToOne(targetEntity: YaMarketTokenModifyAction::class, mappedBy: 'event', cascade: ['all'])]
+    private YaMarketTokenModifyAction $action;
+
+    /** YaMarketTokenModifyDateTime */
+    #[ORM\OneToOne(targetEntity: YaMarketTokenModifyDateTime::class, mappedBy: 'event', cascade: ['all'])]
+    private YaMarketTokenModifyDateTime $datetime;
+
+    /** YaMarketTokenModifyUserAgent */
+    #[ORM\OneToOne(targetEntity: YaMarketTokenModifyUserAgent::class, mappedBy: 'event', cascade: ['all'])]
+    private YaMarketTokenModifyUserAgent $agent;
+
+
+    /** YaMarketTokenModifyIpAddress */
+    #[ORM\OneToOne(targetEntity: YaMarketTokenModifyIpAddress::class, mappedBy: 'event', cascade: ['all'])]
+    private YaMarketTokenModifyIpAddress $ipv;
+
+    /** YaMarketTokenModifyUser */
+    #[ORM\OneToOne(targetEntity: YaMarketTokenModifyUser::class, mappedBy: 'event', cascade: ['all'])]
+    private YaMarketTokenModifyUser $user;
 
     public function __construct()
     {
         $this->id = new YaMarketTokenEventUid();
-        $this->modify = new YaMarketTokenModify($this);
+
+        $this->action = new YaMarketTokenModifyAction($this);
+        $this->datetime = new YaMarketTokenModifyDateTime($this);
+        $this->agent = new YaMarketTokenModifyUserAgent($this);
+        $this->user = new YaMarketTokenModifyUser($this);
+        $this->ipv = new YaMarketTokenModifyIpAddress($this);
     }
 
     public function __clone(): void
@@ -123,13 +177,17 @@ class YaMarketTokenEvent extends EntityEvent
         return (string) $this->id;
     }
 
-    public function setMain(YaMarketToken|UserProfileUid $profile): self
+    public function setMain(YaMarketToken|YaMarketTokenUid $main): self
     {
-        $this->profile = $profile instanceof YaMarketToken ? $profile->getId() : $profile;
+        $this->main = $main instanceof YaMarketToken ? $main->getId() : $main;
 
         return $this;
     }
 
+    public function getId(): YaMarketTokenEventUid
+    {
+        return $this->id;
+    }
 
     public function getDto($dto): mixed
     {
@@ -153,13 +211,50 @@ class YaMarketTokenEvent extends EntityEvent
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
     }
 
-    public function getId(): YaMarketTokenEventUid
+    public function equalsTokenProfile(UserProfileUid $profile): bool
     {
-        return $this->id;
+        return $this->profile->getValue()->equals($profile);
     }
 
-    public function getProfile(): UserProfileUid
+    public function getAction(): YaMarketTokenModifyAction
     {
-        return $this->profile;
+        return $this->action;
     }
+
+    public function getAgent(): YaMarketTokenModifyUserAgent
+    {
+        return $this->agent;
+    }
+
+    public function getIpAddress(): YaMarketTokenModifyIpAddress
+    {
+        return $this->ipv;
+    }
+
+    public function getUser(): YaMarketTokenModifyUser
+    {
+        return $this->user;
+    }
+
+
+
+
+
+    //    public function setAgent(string $agent): self
+    //    {
+    //        $this->agent->setValue($agent);
+    //        return $this;
+    //    }
+    //
+    //    public function setUser(YaMarketTokenModifyUser $user): self
+    //    {
+    //        $this->user->setValue($user);
+    //        return $this;
+    //    }
+    //
+    //    public function setIpAddress(?YaMarketTokenModifyIpAddress $IpAddress): self
+    //    {
+    //        $this->ipv = $IpAddress;
+    //        return $this;
+    //    }
 }

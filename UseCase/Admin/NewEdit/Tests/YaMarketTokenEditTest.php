@@ -28,6 +28,7 @@ namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Tests;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Repository\YaMarketTokenCurrentEvent\YaMarketTokenCurrentEventInterface;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenExtraDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\YaMarketTokenHandler;
@@ -47,7 +48,10 @@ class YaMarketTokenEditTest extends KernelTestCase
     {
         /** @var YaMarketTokenCurrentEventInterface $YaMarketTokenCurrentEvent */
         $YaMarketTokenCurrentEvent = self::getContainer()->get(YaMarketTokenCurrentEventInterface::class);
-        $YaMarketTokenEvent = $YaMarketTokenCurrentEvent->findByProfile(UserProfileUid::TEST);
+
+        $YaMarketTokenEvent = $YaMarketTokenCurrentEvent
+            ->forMain(new YaMarketTokenUid(YaMarketTokenUid::TEST))
+            ->find();
 
         self::assertNotFalse($YaMarketTokenEvent);
         self::assertNotNull($YaMarketTokenEvent);

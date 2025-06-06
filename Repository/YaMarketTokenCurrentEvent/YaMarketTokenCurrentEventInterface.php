@@ -23,11 +23,16 @@
 
 namespace BaksDev\Yandex\Market\Repository\YaMarketTokenCurrentEvent;
 
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
+use BaksDev\Yandex\Market\Entity\YaMarketToken;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 
 interface YaMarketTokenCurrentEventInterface
 {
+    public function forMain(YaMarketToken|YaMarketTokenUid $main): self;
+
     /** Метод возвращает активное событие токена профиля */
-    public function findByProfile(UserProfileUid|string $profile): YaMarketTokenEvent|false;
+    public function find(): YaMarketTokenEvent|false;
 }

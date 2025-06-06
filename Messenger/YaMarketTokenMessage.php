@@ -27,6 +27,7 @@ namespace BaksDev\Yandex\Market\Messenger;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
+use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 
 final class YaMarketTokenMessage
 {
@@ -47,7 +48,7 @@ final class YaMarketTokenMessage
 
 
     public function __construct(
-        UserProfileUid $id,
+        YaMarketTokenUid $id,
         YaMarketTokenEventUid $event,
         ?YaMarketTokenEventUid $last = null
     )
@@ -61,9 +62,9 @@ final class YaMarketTokenMessage
     /**
      * Идентификатор
      */
-    public function getId(): UserProfileUid
+    public function getId(): YaMarketTokenUid
     {
-        return new UserProfileUid($this->id);
+        return new YaMarketTokenUid($this->id);
     }
 
 

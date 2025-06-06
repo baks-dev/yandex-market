@@ -25,5 +25,5 @@ interface YaMarketTokenEventInterface
 {
     public function getEvent(): ?YaMarketTokenEventUid;
 
-    public function getProfile(): ?UserProfileUid;
+    //public function getProfile(): ?UserProfileUid;
 }

@@ -27,6 +27,15 @@ namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit;
 
 use BaksDev\Users\Profile\UserProfile\Repository\UserProfileChoice\UserProfileChoiceInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Active\YaMarketTokenActiveForm;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Business\YaMarketTokenBusinessForm;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Card\YaMarketTokenCardForm;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenCompanyForm;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Percent\YaMarketTokenPercentForm;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Profile\YaMarketTokenProfileFrom;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Token\YaMarketTokenValueForm;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Type\YaMarketTokenTypeForm;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Vat\YaMarketTokenVatForm;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -41,60 +50,38 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class YaMarketTokenForm extends AbstractType
 {
-    private UserProfileChoiceInterface $profileChoice;
-
-
-    public function __construct(UserProfileChoiceInterface $profileChoice)
-    {
-        $this->profileChoice = $profileChoice;
-    }
-
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var YaMarketTokenDTO $data */
-        $data = $builder->getData();
+        $builder->add('active', YaMarketTokenActiveForm::class, ['label' => false]);
 
-        if(!$data->getProfile())
-        {
-            /* TextType */
-            $builder->add('profile', ChoiceType::class, [
-                'choices' => $this->profileChoice->getActiveUserProfile(),
-                'choice_value' => function(?UserProfileUid $profile) {
-                    return $profile?->getValue();
-                },
-                'choice_label' => function(UserProfileUid $profile) {
-                    return $profile->getAttr();
-                },
-                'label' => false,
-                'expanded' => false,
-                'multiple' => false,
-                'required' => false,
-                'attr' => ['data-select' => 'select2',]
-            ]);
-        }
+        $builder->add('business', YaMarketTokenBusinessForm::class, ['label' => false]);
 
-        $builder->add('token', TextareaType::class, ['required' => false]);
+        $builder->add('company', YaMarketTokenCompanyForm::class, ['label' => false]);
+
+        $builder->add('percent', YaMarketTokenPercentForm::class, ['label' => false]);
+
+        $builder->add('profile', YaMarketTokenProfileFrom::class, ['label' => false]);
+
+        $builder->add('token', YaMarketTokenValueForm::class, ['label' => false]);
+
+        $builder->add('type', YaMarketTokenTypeForm::class, ['label' => false]);
+
+        $builder->add('vat', YaMarketTokenVatForm::class, ['label' => false]);
+
+        $builder->add('card', YaMarketTokenCardForm::class, ['label' => false]);
 
 
-        $builder->add('company', NumberType::class);
-
-        $builder->add('business', NumberType::class);
-
-        $builder->add('percent', TextType::class);
-
-        $builder->add('active', CheckboxType::class, ['required' => false]);
-
-        /* Коллекция продукции */
-        $builder->add('extra', CollectionType::class, [
-            'entry_type' => Company\YaMarketCompanyForm::class,
-            'entry_options' => ['label' => false],
-            'label' => false,
-            'by_reference' => false,
-            'allow_delete' => true,
-            'allow_add' => true,
-            'prototype_name' => '__company__',
-        ]);
+        //        /* Коллекция продукции */
+        //        $builder->add('extra', CollectionType::class, [
+        //            'entry_type' => Company\YaMarketCompanyForm::class,
+        //            'entry_options' => ['label' => false],
+        //            'label' => false,
+        //            'by_reference' => false,
+        //            'allow_delete' => true,
+        //            'allow_add' => true,
+        //            'prototype_name' => '__company__',
+        //        ]);
 
 
         /* Сохранить ******************************************************/

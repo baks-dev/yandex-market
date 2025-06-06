@@ -23,6 +23,7 @@
 
 namespace BaksDev\Yandex\Market\Repository\AllProfileToken;
 
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Generator;
 
 interface AllProfileYaMarketTokenInterface
@@ -31,6 +32,8 @@ interface AllProfileYaMarketTokenInterface
 
     /**
      * Метод возвращает идентификаторы профилей всех добавленных токенов
+     *
+     * @return Generator<int, UserProfileUid>|false
      */
-    public function findAll(): Generator;
+    public function findAll(): Generator|false;
 }

@@ -35,25 +35,26 @@ use Symfony\Contracts\Cache\ItemInterface;
 final class YandexMarketShopRequest extends YandexMarket
 {
     /**
-     * Возвращает список магазинов, к которым имеет доступ пользователь — владелец авторизационного токена, использованного в запросе.
-     * Для агентских пользователей список состоит из подагентских магазинов.
+     * Возвращает список магазинов, к которым имеет доступ пользователь — владелец авторизационного токена,
+     * использованного в запросе. Для агентских пользователей список состоит из подагентских магазинов.
      *
      * ОГРАНИЧЕНИЕ! 1000 запросов в час
      *
      * @see https://yandex.ru/dev/market/partner-api/doc/ru/reference/campaigns/getCampaigns
      *
+     * @return \Generator<int, YandexMarketShopDTO>|false
+     *
      */
-    public function findAll(): Generator
+    public function findAll(): Generator|false
     {
         /** Кешируем результат запроса */
 
-        $cache = new FilesystemAdapter('yandex-market');
+        $cache = $this->getCacheInit('yandex-market'); // new FilesystemAdapter('yandex-market');
+        $key = 'ya-market-shops-'.$this->getProfile();
 
-        $content = $cache->get('ya-market-shops-'.$this->profile->getValue(), function(
-            ItemInterface $item
-        ) {
+        $content = $cache->get($key, function(ItemInterface $item) {
 
-            $item->expiresAfter(DateInterval::createFromDateString('1 day'));
+            $item->expiresAfter(DateInterval::createFromDateString('1 seconds'));
 
             $response = $this->TokenHttpClient()
                 ->request(
@@ -70,15 +71,20 @@ final class YandexMarketShopRequest extends YandexMarket
                     $this->logger->critical($error['code'].': '.$error['message'], [self::class.':'.__LINE__]);
                 }
 
-                throw new DomainException(
-                    message: 'Ошибка YandexMarketShopRequest',
-                    code: $response->getStatusCode()
-                );
+                return false;
             }
+
+
+            $item->expiresAfter(DateInterval::createFromDateString('1 day'));
 
             return $response->toArray(false);
 
         });
+
+        if(empty($content) || false === isset($content['campaigns']))
+        {
+            return false;
+        }
 
         foreach($content['campaigns'] as $data)
         {

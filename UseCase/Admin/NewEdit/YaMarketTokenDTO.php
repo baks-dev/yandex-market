@@ -28,7 +28,16 @@ namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEventInterface;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Active\YaMarketTokenActiveDTO;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Business\YaMarketTokenBusinessDTO;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Card\YaMarketTokenCardDTO;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenCompanyDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenExtraDTO;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Percent\YaMarketTokenPercentDTO;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Profile\YaMarketTokenProfileDTO;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Token\YaMarketTokenValueDTO;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Type\YaMarketTokenTypeDTO;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Vat\YaMarketTokenVatDTO;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -43,48 +52,73 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
     private ?YaMarketTokenEventUid $id = null;
 
     /**
-     * ID настройки (профиль пользователя)
+     * Тип (схема работы) токена
      */
-    #[Assert\NotBlank]
-    #[Assert\Uuid]
-    private ?UserProfileUid $profile = null;
+    #[Assert\Valid]
+    private YaMarketTokenTypeDTO $type;
+
+    /**
+     * Профиль пользователя
+     */
+    #[Assert\Valid]
+    private YaMarketTokenProfileDTO $profile;
 
     /**
      * Токен
      */
-    private ?string $token = null;
-
+    #[Assert\Valid]
+    private YaMarketTokenValueDTO $token;
 
     /**
      * Идентификатор кабинета
      */
-    #[Assert\NotBlank]
-    private int $business;
+    #[Assert\Valid]
+    private YaMarketTokenBusinessDTO $business;
 
     /**
      * Идентификатор компании
      */
-    #[Assert\NotBlank]
-    private int $company;
+    #[Assert\Valid]
+    private YaMarketTokenCompanyDTO $company;
 
     /**
      * Торговая наценка
      */
-    private ?string $percent = null;
+    #[Assert\Valid]
+    private YaMarketTokenPercentDTO $percent;
 
     /**
      * Статус true = активен / false = заблокирован
      */
-    private bool $active = true;
+    #[Assert\Valid]
+    private YaMarketTokenActiveDTO $active;
 
-    /** Коллекция дополнительных идентификаторов*/
-    private ArrayCollection $extra;
+    /**
+     * НДС, применяемый для товара
+     */
+    #[Assert\Valid]
+    private YaMarketTokenVatDTO $vat;
+
+    /**
+     * Обновлять карточки токеном
+     */
+    #[Assert\Valid]
+    private YaMarketTokenCardDTO $card;
+
 
     public function __construct()
     {
-        $this->extra = new ArrayCollection();
-    }
+        $this->type = new YaMarketTokenTypeDTO();
+        $this->profile = new YaMarketTokenProfileDTO();
+        $this->active = new YaMarketTokenActiveDTO();
+        $this->business = new YaMarketTokenBusinessDTO();
+        $this->company = new YaMarketTokenCompanyDTO();
+        $this->percent = new YaMarketTokenPercentDTO();
+        $this->token = new YaMarketTokenValueDTO();
+        $this->vat = new YaMarketTokenVatDTO();
+        $this->card = new YaMarketTokenCardDTO();
 
+    }
 
     public function setId(?YaMarketTokenEventUid $id): void
     {
@@ -97,126 +131,49 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
         return $this->id;
     }
 
+    public function getType(): YaMarketTokenTypeDTO
+    {
+        return $this->type;
+    }
 
-    /**
-     * Profile
-     */
-    public function getProfile(): ?UserProfileUid
+    public function getProfile(): YaMarketTokenProfileDTO
     {
         return $this->profile;
     }
 
-
-    public function setProfile(UserProfileUid $profile): void
-    {
-        $this->profile = $profile;
-    }
-
-    /**
-     * Token
-     */
-    public function getToken(): ?string
+    public function getToken(): YaMarketTokenValueDTO
     {
         return $this->token;
     }
 
-    public function setToken(?string $token): void
-    {
-        if(!empty($token))
-        {
-            $this->token = $token;
-        }
-    }
-
-    public function hiddenToken(): void
-    {
-        $this->token = null;
-    }
-
-
-    /**
-     * Business
-     */
-    public function getBusiness(): int
+    public function getBusiness(): YaMarketTokenBusinessDTO
     {
         return $this->business;
     }
 
-    public function setBusiness(int $business): self
-    {
-        $this->business = $business;
-        return $this;
-    }
-
-    /**
-     * Company
-     */
-    public function getCompany(): int
+    public function getCompany(): YaMarketTokenCompanyDTO
     {
         return $this->company;
     }
 
-    public function setCompany(int $company): self
-    {
-        $this->company = $company;
-        return $this;
-    }
-
-    /**
-     * Active
-     */
-    public function getActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): self
-    {
-        $this->active = $active;
-        return $this;
-    }
-
-    /**
-     * Percent
-     */
-    public function getPercent(): ?string
+    public function getPercent(): YaMarketTokenPercentDTO
     {
         return $this->percent;
     }
 
-    public function setPercent(?string $percent): self
+    public function getActive(): YaMarketTokenActiveDTO
     {
-        $this->percent = $percent;
-        return $this;
+        return $this->active;
     }
 
-
-    /**
-     * Company
-     */
-    public function getExtra(): ArrayCollection
+    public function getVat(): YaMarketTokenVatDTO
     {
-        return $this->extra;
+        return $this->vat;
     }
 
-    public function setExtra(ArrayCollection $extra): self
+    public function getCard(): YaMarketTokenCardDTO
     {
-        $this->extra = $extra;
-        return $this;
-    }
-
-    public function addExtra(YaMarketTokenExtraDTO $company): self
-    {
-        $filter = $this->extra->filter(function(YaMarketTokenExtraDTO $element) use ($company) {
-            return $company->getCompany() === $element->getCompany() && $company->getBusiness() === $element->getBusiness();
-        });
-
-        if($filter->isEmpty())
-        {
-            $this->extra->add($company);
-        }
-
-        return $this;
+        return $this->card;
     }
 
 }
