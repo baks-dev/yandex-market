@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -36,11 +36,12 @@ use BaksDev\Users\Profile\UserProfile\Entity\Event\UserProfileEvent;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\Personal\UserProfilePersonal;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
-
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\Active\YaMarketTokenActive;
 use BaksDev\Yandex\Market\Entity\Event\Card\YaMarketTokenCard;
 use BaksDev\Yandex\Market\Entity\Event\Profile\YaMarketTokenProfile;
+use BaksDev\Yandex\Market\Entity\Event\Stocks\YaMarketTokenStocks;
+use BaksDev\Yandex\Market\Entity\Event\Type\YaMarketTokenType;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 
 final class AllYaMarketTokenRepository implements AllYaMarketTokenInterface
@@ -124,7 +125,23 @@ final class AllYaMarketTokenRepository implements AllYaMarketTokenInterface
                 'card.event = token.event',
             );
 
+        $dbal
+            ->addSelect('stocks.value AS stocks')
+            ->leftJoin(
+                'token',
+                YaMarketTokenStocks::class,
+                'stocks',
+                'stocks.event = token.event',
+            );
 
+        $dbal
+            ->addSelect('type.value AS type')
+            ->leftJoin(
+                'token',
+                YaMarketTokenType::class,
+                'type',
+                'type.event = token.event',
+            );
         // ОТВЕТСТВЕННЫЙ
 
         // UserProfile
