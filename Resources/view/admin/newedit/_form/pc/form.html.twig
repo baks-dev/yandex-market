@@ -98,15 +98,34 @@
 
         <div class="d-flex gap-3">
 
-            <div class="flex-fill d-flex justify-content-around pb-3 radio-buttons gap-3" data-buttons="true">
+            <div class="flex-fill d-flex justify-content-around  radio-buttons gap-3" data-buttons="true">
 
-                <label class="btn p-3 border-dotted rounded-3 w-100 {{ form.card.value.vars.data ? 'active' }}">
+                <label class="btn btn-sm border-dotted rounded-3 w-100 {{ form.active.value.vars.data ? 'active' }}">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                    <span class="h5">
+                    <span class="h6">
+                        <div class="form-check d-flex align-items-center">
+                            {{ form_widget(form.active.value, { label: false }) }}
+                            <span class="small">
+                                Активный токен
+                            </span>
+                        </div>
+                    </span>
+                        </div>
+                    </div>
+                </label>
+
+            </div>
+
+            <div class="flex-fill d-flex justify-content-around radio-buttons gap-3" data-buttons="true">
+
+                <label class="btn btn-sm border-dotted rounded-3 w-100 {{ form.card.value.vars.data ? 'active' }}">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                    <span class="h6">
                         <div class="form-check d-flex align-items-center">
                             {{ form_widget(form.card.value, { label: false }) }}
-                            <span>
+                            <span class="small">
                                 Обновлять карточки
                             </span>
                         </div>
@@ -117,16 +136,16 @@
 
             </div>
 
-            <div class="flex-fill d-flex justify-content-around pb-3 radio-buttons gap-3" data-buttons="true">
+            <div class="flex-fill d-flex justify-content-around radio-buttons gap-3" data-buttons="true">
 
-                <label class="btn p-3 border-dotted rounded-3 w-100 {{ form.active.value.vars.data ? 'active' }}">
+                <label class="btn btn-sm border-dotted rounded-3 w-100 {{ form.stocks.value.vars.data ? 'active' }}">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                    <span class="h5">
+                    <span class="h6">
                         <div class="form-check d-flex align-items-center">
-                            {{ form_widget(form.active.value, { label: false }) }}
-                            <span>
-                                Активный токен
+                            {{ form_widget(form.stocks.value, { label: false }) }}
+                            <span class="small">
+                                Запустить продажи
                             </span>
                         </div>
                     </span>
@@ -135,6 +154,8 @@
                 </label>
 
             </div>
+
+
         </div>
 
 

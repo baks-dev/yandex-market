@@ -35,6 +35,7 @@ use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenCompanyDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenExtraDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Percent\YaMarketTokenPercentDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Profile\YaMarketTokenProfileDTO;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Stocks\YaMarketTokenStocksDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Token\YaMarketTokenValueDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Type\YaMarketTokenTypeDTO;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Vat\YaMarketTokenVatDTO;
@@ -105,6 +106,11 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
     #[Assert\Valid]
     private YaMarketTokenCardDTO $card;
 
+    /**
+     * Запустить продажи
+     */
+    #[Assert\Valid]
+    private YaMarketTokenStocksDTO $stocks;
 
     public function __construct()
     {
@@ -117,6 +123,7 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
         $this->token = new YaMarketTokenValueDTO();
         $this->vat = new YaMarketTokenVatDTO();
         $this->card = new YaMarketTokenCardDTO();
+        $this->stocks = new YaMarketTokenStocksDTO();
 
     }
 
@@ -176,4 +183,8 @@ final class YaMarketTokenDTO implements YaMarketTokenEventInterface
         return $this->card;
     }
 
+    public function getStocks(): YaMarketTokenStocksDTO
+    {
+        return $this->stocks;
+    }
 }

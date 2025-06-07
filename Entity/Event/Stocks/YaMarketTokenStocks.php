@@ -23,9 +23,12 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Yandex\Market\Entity\Event\Modify\UserAgent;
+namespace BaksDev\Yandex\Market\Entity\Event\Stocks;
+
 
 use BaksDev\Core\Entity\EntityEvent;
+use BaksDev\Core\Entity\EntityState;
+use BaksDev\Files\Resources\Upload\UploadEntityInterface;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,35 +36,28 @@ use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * YaMarketTokenModifyUserAgent
+ * YaMarketTokenStocks
  *
  * @see YaMarketTokenEvent
  */
 #[ORM\Entity]
-#[ORM\Table(name: 'ya_market_token_modify_agent')]
-class YaMarketTokenModifyUserAgent extends EntityEvent
+#[ORM\Table(name: 'ya_market_token_stocks')]
+class YaMarketTokenStocks extends EntityEvent
 {
     /** Связь на событие */
     #[Assert\NotBlank]
     #[ORM\Id]
-    #[ORM\OneToOne(targetEntity: YaMarketTokenEvent::class, inversedBy: 'agent')]
+    #[ORM\OneToOne(targetEntity: YaMarketTokenEvent::class, inversedBy: 'stocks')]
     #[ORM\JoinColumn(name: 'event', referencedColumnName: 'id')]
     private YaMarketTokenEvent $event;
 
     /** Значение свойства */
-    #[Assert\NotBlank]
-    #[ORM\Column(type: Types::TEXT)]
-    private string $value;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $value = false;
 
     public function __construct(YaMarketTokenEvent $event)
     {
         $this->event = $event;
-        $this->value = 'console';
-    }
-
-    public function __clone(): void
-    {
-        $this->value = 'console';
     }
 
     public function __toString(): string
@@ -69,19 +65,12 @@ class YaMarketTokenModifyUserAgent extends EntityEvent
         return (string) $this->event;
     }
 
-    public function getValue(): string
+    public function getValue(): bool
     {
-        return $this->value;
+        return $this->value === true;
     }
 
-    public function setValue(string $value): self
-    {
-        $this->value = $value;
-        return $this;
-    }
-
-
-    /** @return YaMarketTokenModifyUserAgentInterface */
+    /** @return YaMarketTokenStocksInterface */
     public function getDto($dto): mixed
     {
         if(is_string($dto) && class_exists($dto))
@@ -89,7 +78,7 @@ class YaMarketTokenModifyUserAgent extends EntityEvent
             $dto = new $dto();
         }
 
-        if($dto instanceof YaMarketTokenModifyUserAgentInterface)
+        if($dto instanceof YaMarketTokenStocksInterface)
         {
             return parent::getDto($dto);
         }
@@ -97,10 +86,10 @@ class YaMarketTokenModifyUserAgent extends EntityEvent
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
     }
 
-    /** @var YaMarketTokenModifyUserAgentInterface $dto */
+    /** @var YaMarketTokenStocksInterface $dto */
     public function setEntity($dto): mixed
     {
-        if($dto instanceof YaMarketTokenModifyUserAgentInterface)
+        if($dto instanceof YaMarketTokenStocksInterface)
         {
             return parent::setEntity($dto);
         }

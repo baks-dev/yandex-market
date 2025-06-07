@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,33 +21,14 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Yandex\Market\Entity\Event\Stocks;
 
-namespace BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company;
-
-use BaksDev\Yandex\Market\Entity\Company\YaMarketTokenExtraInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-
-/** @see YaMarketTokenExtra */
-final class YaMarketTokenExtraDTO implements YaMarketTokenExtraInterface
+interface YaMarketTokenStocksInterface
 {
     /**
-     * Идентификатор компании
+     * Значение свойства
+     *
+     * @see YaMarketTokenStocks
      */
-    #[Assert\NotBlank]
-    private ?int $company = null;
-
-    /**
-     * Company
-     */
-    public function getCompany(): ?int
-    {
-        return $this->company;
-    }
-
-    public function setCompany(int $company): self
-    {
-        $this->company = $company;
-        return $this;
-    }
+    public function getValue(): bool;
 }

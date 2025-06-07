@@ -33,6 +33,7 @@ use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Card\YaMarketTokenCardForm;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Company\YaMarketTokenCompanyForm;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Percent\YaMarketTokenPercentForm;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Profile\YaMarketTokenProfileFrom;
+use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Stocks\YaMarketTokenStocksForm;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Token\YaMarketTokenValueForm;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Type\YaMarketTokenTypeForm;
 use BaksDev\Yandex\Market\UseCase\Admin\NewEdit\Vat\YaMarketTokenVatForm;
@@ -50,7 +51,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class YaMarketTokenForm extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('active', YaMarketTokenActiveForm::class, ['label' => false]);
@@ -71,18 +71,7 @@ final class YaMarketTokenForm extends AbstractType
 
         $builder->add('card', YaMarketTokenCardForm::class, ['label' => false]);
 
-
-        //        /* Коллекция продукции */
-        //        $builder->add('extra', CollectionType::class, [
-        //            'entry_type' => Company\YaMarketCompanyForm::class,
-        //            'entry_options' => ['label' => false],
-        //            'label' => false,
-        //            'by_reference' => false,
-        //            'allow_delete' => true,
-        //            'allow_add' => true,
-        //            'prototype_name' => '__company__',
-        //        ]);
-
+        $builder->add('stocks', YaMarketTokenStocksForm::class, ['label' => false]);
 
         /* Сохранить ******************************************************/
         $builder->add(

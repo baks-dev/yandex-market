@@ -35,6 +35,7 @@ final  class YaMarketAuthorizationToken
         private readonly int|string $company,
         private readonly int|string $business,
         private readonly bool $card,
+        private readonly bool $stocks,
 
         private ?string $percent = null,
         private ?string $vat = null
@@ -92,6 +93,11 @@ final  class YaMarketAuthorizationToken
     public function isCard(): bool
     {
         return $this->card === true;
+    }
+
+    public function isStocks(): bool
+    {
+        return $this->stocks === true;
     }
 
     /**

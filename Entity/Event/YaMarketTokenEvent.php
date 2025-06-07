@@ -37,6 +37,7 @@ use BaksDev\Yandex\Market\Entity\Event\Modify\User\YaMarketTokenModifyUser;
 use BaksDev\Yandex\Market\Entity\Event\Modify\UserAgent\YaMarketTokenModifyUserAgent;
 use BaksDev\Yandex\Market\Entity\Event\Percent\YaMarketTokenPercent;
 use BaksDev\Yandex\Market\Entity\Event\Profile\YaMarketTokenProfile;
+use BaksDev\Yandex\Market\Entity\Event\Stocks\YaMarketTokenStocks;
 use BaksDev\Yandex\Market\Entity\Event\Token\YaMarketTokenValue;
 use BaksDev\Yandex\Market\Entity\Event\Type\YaMarketTokenType;
 use BaksDev\Yandex\Market\Entity\Event\Vat\YaMarketTokenVat;
@@ -129,6 +130,12 @@ class YaMarketTokenEvent extends EntityEvent
      */
     #[ORM\OneToOne(targetEntity: YaMarketTokenCard::class, mappedBy: 'event', cascade: ['all'])]
     private ?YaMarketTokenCard $card = null;
+
+    /**
+     * Запустить продажи
+     */
+    #[ORM\OneToOne(targetEntity: YaMarketTokenStocks::class, mappedBy: 'event', cascade: ['all'])]
+    private ?YaMarketTokenStocks $stocks = null;
 
 
     /**

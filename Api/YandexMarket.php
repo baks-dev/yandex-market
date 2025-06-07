@@ -83,12 +83,12 @@ abstract class YandexMarket
 
     public function TokenHttpClient(YaMarketAuthorizationToken|false $AuthorizationToken = false): RetryableHttpClient
     {
-        if($AuthorizationToken !== false)
+        if($AuthorizationToken instanceof YaMarketAuthorizationToken)
         {
             $this->AuthorizationToken = $AuthorizationToken;
         }
 
-        if($this->AuthorizationToken === false)
+        if(false === ($this->AuthorizationToken instanceof YaMarketAuthorizationToken))
         {
             if(false === ($this->identifier instanceof YaMarketTokenUid))
             {
@@ -169,5 +169,10 @@ abstract class YandexMarket
     protected function isCard(): bool
     {
         return $this->AuthorizationToken->isCard();
+    }
+
+    protected function isStocks(): bool
+    {
+        return $this->AuthorizationToken->isStocks();
     }
 }
