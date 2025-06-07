@@ -143,7 +143,7 @@ final  class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileI
             );
 
         $dbal
-            ->join(
+            ->leftJoin(
                 'token',
                 YaMarketTokenCard::class,
                 'card',
@@ -151,7 +151,7 @@ final  class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileI
             );
 
         $dbal
-            ->join(
+            ->leftJoin(
                 'token',
                 YaMarketTokenStocks::class,
                 'stocks',

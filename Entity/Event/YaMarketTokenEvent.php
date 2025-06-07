@@ -144,7 +144,7 @@ class YaMarketTokenEvent extends EntityEvent
 
     /** YaMarketTokenModifyAction */
     #[ORM\OneToOne(targetEntity: YaMarketTokenModifyAction::class, mappedBy: 'event', cascade: ['all'])]
-    private YaMarketTokenModifyAction $action;
+    private ?YaMarketTokenModifyAction $action = null;
 
     /** YaMarketTokenModifyDateTime */
     #[ORM\OneToOne(targetEntity: YaMarketTokenModifyDateTime::class, mappedBy: 'event', cascade: ['all'])]
@@ -152,16 +152,16 @@ class YaMarketTokenEvent extends EntityEvent
 
     /** YaMarketTokenModifyUserAgent */
     #[ORM\OneToOne(targetEntity: YaMarketTokenModifyUserAgent::class, mappedBy: 'event', cascade: ['all'])]
-    private YaMarketTokenModifyUserAgent $agent;
+    private ?YaMarketTokenModifyUserAgent $agent = null;
 
 
     /** YaMarketTokenModifyIpAddress */
     #[ORM\OneToOne(targetEntity: YaMarketTokenModifyIpAddress::class, mappedBy: 'event', cascade: ['all'])]
-    private YaMarketTokenModifyIpAddress $ipv;
+    private ?YaMarketTokenModifyIpAddress $ipv = null;
 
     /** YaMarketTokenModifyUser */
     #[ORM\OneToOne(targetEntity: YaMarketTokenModifyUser::class, mappedBy: 'event', cascade: ['all'])]
-    private YaMarketTokenModifyUser $user;
+    private ?YaMarketTokenModifyUser $user = null;
 
     public function __construct()
     {
@@ -225,22 +225,22 @@ class YaMarketTokenEvent extends EntityEvent
 
     public function getAction(): YaMarketTokenModifyAction
     {
-        return $this->action;
+        return $this->action ?: $this->action = new YaMarketTokenModifyAction($this);
     }
 
     public function getAgent(): YaMarketTokenModifyUserAgent
     {
-        return $this->agent;
+        return $this->agent ?: $this->agent = new YaMarketTokenModifyUserAgent($this);
     }
 
     public function getIpAddress(): YaMarketTokenModifyIpAddress
     {
-        return $this->ipv;
+        return $this->ipv ?: $this->ipv = new YaMarketTokenModifyIpAddress($this);
     }
 
     public function getUser(): YaMarketTokenModifyUser
     {
-        return $this->user;
+        return $this->user ?: $this->user = new YaMarketTokenModifyUser($this);
     }
 
 

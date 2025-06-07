@@ -34,8 +34,9 @@ final  class YaMarketAuthorizationToken
         private readonly string $token,
         private readonly int|string $company,
         private readonly int|string $business,
-        private readonly bool $card,
-        private readonly bool $stocks,
+
+        private readonly ?bool $card,
+        private readonly ?bool $stocks,
 
         private ?string $percent = null,
         private ?string $vat = null
