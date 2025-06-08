@@ -1,17 +1,17 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
- *
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *
+ *  
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *
+ *  
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -45,11 +45,12 @@ class YandexMarketTest extends KernelTestCase
     public static function setUpBeforeClass(): void
     {
         self::$Authorization = new YaMarketAuthorizationToken(
-            UserProfileUid::TEST,
-            $_SERVER['TEST_YANDEX_MARKET_TOKEN'],
-            $_SERVER['TEST_YANDEX_MARKET_COMPANY'],
-            $_SERVER['TEST_YANDEX_MARKET_BUSINESS'],
-
+            profile: UserProfileUid::TEST,
+            token: $_SERVER['TEST_YANDEX_MARKET_TOKEN'],
+            company: (int) $_SERVER['TEST_YANDEX_MARKET_COMPANY'],
+            business: (int) $_SERVER['TEST_YANDEX_MARKET_BUSINESS'],
+            card: false,
+            stocks: false,
         );
     }
 
@@ -61,12 +62,14 @@ class YandexMarketTest extends KernelTestCase
          */
 
         $AuthorizationFBS = new YaMarketAuthorizationToken(
-            UserProfileUid::TEST,
-            $_SERVER['TEST_YANDEX_MARKET_TOKEN'],
-            $_SERVER['TEST_YANDEX_MARKET_COMPANY'],
-            $_SERVER['TEST_YANDEX_MARKET_BUSINESS'],
-
+            profile: UserProfileUid::TEST,
+            token: $_SERVER['TEST_YANDEX_MARKET_TOKEN'],
+            company: (int) $_SERVER['TEST_YANDEX_MARKET_COMPANY'],
+            business: (int) $_SERVER['TEST_YANDEX_MARKET_BUSINESS'],
+            card: false,
+            stocks: false,
         );
+
 
 
         /** @var YandexMarketShopRequest $YandexMarketShopRequest */
@@ -96,12 +99,14 @@ class YandexMarketTest extends KernelTestCase
          */
 
         $AuthorizationDBS = new YaMarketAuthorizationToken(
-            UserProfileUid::TEST,
-            $_SERVER['TEST_YANDEX_MARKET_TOKEN_DBS'],
-            $_SERVER['TEST_YANDEX_MARKET_COMPANY_DBS'],
-            $_SERVER['TEST_YANDEX_MARKET_BUSINESS_DBS'],
-
+            profile: UserProfileUid::TEST,
+            token: $_SERVER['TEST_YANDEX_MARKET_TOKEN'],
+            company: (int) $_SERVER['TEST_YANDEX_MARKET_COMPANY'],
+            business: (int) $_SERVER['TEST_YANDEX_MARKET_BUSINESS'],
+            card: false,
+            stocks: false,
         );
+
 
         /** @var YandexMarketShopRequest $YandexMarketShopRequest */
         $YandexMarketShopRequest = self::getContainer()->get(YandexMarketShopRequest::class);
