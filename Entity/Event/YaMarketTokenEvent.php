@@ -177,6 +177,7 @@ class YaMarketTokenEvent extends EntityEvent
     public function __clone(): void
     {
         $this->id = clone $this->id;
+        $this->datetime = clone $this->datetime;
     }
 
     public function __toString(): string
@@ -242,26 +243,4 @@ class YaMarketTokenEvent extends EntityEvent
     {
         return $this->user ?: $this->user = new YaMarketTokenModifyUser($this);
     }
-
-
-
-
-
-    //    public function setAgent(string $agent): self
-    //    {
-    //        $this->agent->setValue($agent);
-    //        return $this;
-    //    }
-    //
-    //    public function setUser(YaMarketTokenModifyUser $user): self
-    //    {
-    //        $this->user->setValue($user);
-    //        return $this;
-    //    }
-    //
-    //    public function setIpAddress(?YaMarketTokenModifyIpAddress $IpAddress): self
-    //    {
-    //        $this->ipv = $IpAddress;
-    //        return $this;
-    //    }
 }

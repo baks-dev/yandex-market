@@ -44,7 +44,6 @@
                    style='--bs-table-striped-bg: rgba(249,249,249,0.7);'
             >
                 <thead>
-
                 <tr>
                     <th>#</th>
                     <th class='w-100'>
@@ -59,13 +58,9 @@
                     <th class='text-center'>Карточек</th>
                     <th class='text-center'>Остатки</th>
 
-                    {# {% if is_granted('ROLE_ADMIN') %}
-                        <th class='text-nowrap'>&nbsp;</th>
-                    {% endif %} #}
-
                 </tr>
-
                 </thead>
+
                 <tbody>
 
                 {% for item in query.data %}

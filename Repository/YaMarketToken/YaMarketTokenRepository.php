@@ -40,7 +40,7 @@ use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
 use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 use InvalidArgumentException;
 
-final  class YaMarketTokenByProfileRepository implements YaMarketTokenByProfileInterface
+final  class YaMarketTokenRepository implements YaMarketTokenInterface
 {
     private YaMarketTokenUid|false $token = false;
 

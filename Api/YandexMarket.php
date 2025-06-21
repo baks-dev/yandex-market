@@ -28,7 +28,7 @@ namespace BaksDev\Yandex\Market\Api;
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
-use BaksDev\Yandex\Market\Repository\YaMarketToken\YaMarketTokenByProfileInterface;
+use BaksDev\Yandex\Market\Repository\YaMarketToken\YaMarketTokenInterface;
 use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
 use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 use DomainException;
@@ -54,7 +54,7 @@ abstract class YandexMarket
     public function __construct(
         #[Autowire(env: 'APP_ENV')] private readonly string $environment,
         #[Target('yandexMarketLogger')] protected readonly LoggerInterface $logger,
-        private readonly YaMarketTokenByProfileInterface $TokenByProfile,
+        private readonly YaMarketTokenInterface $TokenByProfile,
         private readonly AppCacheInterface $cache,
     ) {}
 
@@ -168,11 +168,11 @@ abstract class YandexMarket
 
     protected function isCard(): bool
     {
-        return $this->AuthorizationToken->isCard();
+        return $this->AuthorizationToken->isCard() === true;
     }
 
     protected function isStocks(): bool
     {
-        return $this->AuthorizationToken->isStocks();
+        return $this->AuthorizationToken->isStocks() === true;
     }
 }
