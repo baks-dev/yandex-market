@@ -24,7 +24,7 @@
 namespace BaksDev\Yandex\Market\Repository\YaMarketToken;
 
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
-use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use BaksDev\Yandex\Market\Entity\Event\Active\YaMarketTokenActive;
