@@ -33,7 +33,7 @@ interface YaMarketTokensByProfileInterface
     /**
      * Метод возвращает идентификаторы токенов профиля пользователя
      *
-     * @return Generator{int, YaMarketTokenUid}|false $var
+     * @return Generator<int, YaMarketTokenUid>|false $var
      */
     public function findAll(UserProfile|UserProfileUid $profile): Generator|false;
 }

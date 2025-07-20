@@ -54,7 +54,7 @@ abstract class YandexMarket
     public function __construct(
         #[Autowire(env: 'APP_ENV')] private readonly string $environment,
         #[Target('yandexMarketLogger')] protected readonly LoggerInterface $logger,
-        private readonly YaMarketTokenInterface $TokenByProfile,
+        private readonly YaMarketTokenInterface $YaMarketToken,
         private readonly AppCacheInterface $cache,
     ) {}
 
@@ -65,8 +65,8 @@ abstract class YandexMarket
             $identifier = $identifier->getId();
         }
 
-        $this->AuthorizationToken = $this->TokenByProfile
-            ->forToken($identifier)
+        $this->AuthorizationToken = $this->YaMarketToken
+            ->forTokenIdentifier($identifier)
             ->find();
 
         $this->identifier = $identifier;
@@ -99,8 +99,8 @@ abstract class YandexMarket
                 );
             }
 
-            $this->AuthorizationToken = $this->TokenByProfile
-                ->forToken($this->identifier)
+            $this->AuthorizationToken = $this->YaMarketToken
+                ->forTokenIdentifier($this->identifier)
                 ->find();
 
             if(false === ($this->AuthorizationToken instanceof YaMarketAuthorizationToken))

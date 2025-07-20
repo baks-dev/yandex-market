@@ -46,7 +46,7 @@ final  class YaMarketTokenRepository implements YaMarketTokenInterface
 
     public function __construct(private readonly DBALQueryBuilder $DBALQueryBuilder) {}
 
-    public function forToken(YaMarketToken|YaMarketTokenUid $token): self
+    public function forTokenIdentifier(YaMarketToken|YaMarketTokenUid $token): self
     {
         if($token instanceof YaMarketToken)
         {

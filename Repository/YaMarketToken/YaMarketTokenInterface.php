@@ -30,7 +30,7 @@ use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 
 interface YaMarketTokenInterface
 {
-    public function forToken(YaMarketToken|YaMarketTokenUid $token): self;
+    public function forTokenIdentifier(YaMarketToken|YaMarketTokenUid $token): self;
 
     /**
      * Токен авторизации
