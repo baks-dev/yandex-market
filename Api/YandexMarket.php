@@ -95,7 +95,7 @@ abstract class YandexMarket
                 $this->logger->critical('Не указан идентификатор токена через вызов метода forTokenIdentifier', [self::class.':'.__LINE__]);
 
                 throw new InvalidArgumentException(
-                    'Не указан идентификатор токена через вызов метода profile: ->forTokenIdentifier($UserProfileUid)',
+                    'Не указан идентификатор токена через вызов метода profile: ->forTokenIdentifier($YaMarketTokenUid)',
                 );
             }
 
