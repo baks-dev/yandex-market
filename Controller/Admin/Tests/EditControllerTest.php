@@ -27,11 +27,12 @@ use BaksDev\Users\User\Tests\TestUserAccount;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Type\Event\YaMarketTokenEventUid;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/** @group yandex-market */
 #[When(env: 'test')]
+#[Group('yandex-market')]
 final class EditControllerTest extends WebTestCase
 {
     private const string URL = '/admin/ya/market/token/edit/%s';

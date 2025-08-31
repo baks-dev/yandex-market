@@ -24,11 +24,12 @@
 namespace BaksDev\Yandex\Market\Controller\Admin\Tests;
 
 use BaksDev\Users\User\Tests\TestUserAccount;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/** @group yandex-market */
 #[When(env: 'test')]
+#[Group('yandex-market')]
 final class IndexControllerTest extends WebTestCase
 {
     private const string URL = '/admin/ya/market/tokens';

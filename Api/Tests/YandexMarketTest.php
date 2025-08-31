@@ -31,13 +31,12 @@ use BaksDev\Yandex\Market\Api\AllShops\YandexMarketShopDTO;
 use BaksDev\Yandex\Market\Api\AllShops\YandexMarketShopRequest;
 use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group yandex-market-test
- */
 #[When(env: 'test')]
+#[Group('yandex-market')]
 class YandexMarketTest extends KernelTestCase
 {
     private static YaMarketAuthorizationToken $Authorization;
