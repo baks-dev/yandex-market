@@ -89,7 +89,7 @@ final  class YaMarketTokenRepository implements YaMarketTokenInterface
 
         $dbal
             ->join(
-                'token',
+                'profile',
                 UserProfileInfo::class,
                 'info',
                 'info.profile = profile.value AND info.status = :status',
