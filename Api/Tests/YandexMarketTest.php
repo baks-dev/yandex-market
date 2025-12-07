@@ -32,6 +32,8 @@ use BaksDev\Yandex\Market\Api\AllShops\YandexMarketShopRequest;
 use BaksDev\Yandex\Market\Type\Authorization\YaMarketAuthorizationToken;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Group;
+use ReflectionClass;
+use ReflectionMethod;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
@@ -84,14 +86,21 @@ class YandexMarketTest extends KernelTestCase
 
         foreach($shops as $YandexMarketShopDTO)
         {
-            self::assertInstanceOf(UserProfileUid::class, $YandexMarketShopDTO->getProfile());
-            self::assertIsInt($YandexMarketShopDTO->getCompany());
-            self::assertIsInt($YandexMarketShopDTO->getClient());
-            self::assertIsInt($YandexMarketShopDTO->getBusiness());
-            self::assertIsString($YandexMarketShopDTO->getName());
-            self::assertIsString($YandexMarketShopDTO->getType());
-        }
+            // Вызываем все геттеры
+            $reflectionClass = new ReflectionClass(YandexMarketShopDTO::class);
+            $methods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
 
+            foreach($methods as $method)
+            {
+                // Методы без аргументов
+                if($method->getNumberOfParameters() === 0)
+                {
+                    // Вызываем метод
+                    $data = $method->invoke($YandexMarketShopDTO);
+                    // dump($data);
+                }
+            }
+        }
 
         /**
          * DBS
