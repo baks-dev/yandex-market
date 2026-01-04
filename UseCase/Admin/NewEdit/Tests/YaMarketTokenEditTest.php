@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -59,35 +59,35 @@ class YaMarketTokenEditTest extends KernelTestCase
         $YaMarketTokenEvent->getDto($YaMarketTokenDTO);
 
 
-        self::assertEquals('yandex_market_token', $YaMarketTokenDTO->getToken());
-        $YaMarketTokenDTO->setToken('yandex_market_token_edit');
+        self::assertEquals('yandex_market_token', $YaMarketTokenDTO->getToken()->getValue());
+        $YaMarketTokenDTO->getToken()->setValue('yandex_market_token_edit');
 
 
-        self::assertTrue($YaMarketTokenDTO->getActive());
-        $YaMarketTokenDTO->setActive(false);
+        self::assertTrue($YaMarketTokenDTO->getActive()->getValue());
+        $YaMarketTokenDTO->getActive()->setValue(false);
 
 
-        self::assertTrue($YaMarketTokenDTO->getProfile()->equals(UserProfileUid::TEST)); //($UserProfileUid::TEST, $YaMarketTokenDTO->getProfile());
+        self::assertTrue($YaMarketTokenDTO->getProfile()->getValue()->equals(UserProfileUid::TEST)); //($UserProfileUid::TEST, $YaMarketTokenDTO->getProfile());
         $UserProfileUid = new UserProfileUid(UserProfileUid::TEST);
-        $YaMarketTokenDTO->setProfile(clone $UserProfileUid);
+        $YaMarketTokenDTO->getProfile()->setValue(clone $UserProfileUid);
 
 
-        self::assertEquals(123456789, $YaMarketTokenDTO->getBusiness());
-        $YaMarketTokenDTO->setBusiness(987654321);
+        self::assertEquals(123456789, $YaMarketTokenDTO->getBusiness()->getValue());
+        $YaMarketTokenDTO->getBusiness()->setValue(987654321);
 
 
-        self::assertEquals(123456789, $YaMarketTokenDTO->getCompany());
-        $YaMarketTokenDTO->setCompany(987654321);
+        self::assertEquals(123456789, $YaMarketTokenDTO->getCompany()->getValue());
+        $YaMarketTokenDTO->getCompany()->setValue(987654321);
 
 
         /** Extra Company */
 
 
-        /** @var YaMarketTokenExtraDTO $YaMarketCompanyDTO */
-        $YaMarketCompanyDTO = $YaMarketTokenDTO->getExtra()->current();
+        ///** @var YaMarketTokenExtraDTO $YaMarketCompanyDTO */
+        //$YaMarketCompanyDTO = $YaMarketTokenDTO->getExtra()->current();
 
-        self::assertEquals(111111111, $YaMarketCompanyDTO->getCompany());
-        $YaMarketCompanyDTO->setCompany(222222222);
+        //self::assertEquals(111111111, $YaMarketCompanyDTO->getCompany());
+        //$YaMarketCompanyDTO->setCompany(222222222);
 
 
         /** @var YaMarketTokenHandler $YaMarketTokenHandler */

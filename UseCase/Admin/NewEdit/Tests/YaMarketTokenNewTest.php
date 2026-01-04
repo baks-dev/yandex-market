@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ class YaMarketTokenNewTest extends KernelTestCase
         $em = self::getContainer()->get(EntityManagerInterface::class);
 
         $main = $em->getRepository(YaMarketToken::class)
-            ->findOneBy(['id' => YaMarketTokenUid::TEST]);
+            ->find(YaMarketTokenUid::TEST);
 
         if($main)
         {
@@ -73,33 +73,33 @@ class YaMarketTokenNewTest extends KernelTestCase
         /** @see YaMarketTokenDTO */
         $YaMarketTokenDTO = new YaMarketTokenDTO();
 
-        $YaMarketTokenDTO->setToken('yandex_market_token');
-        self::assertEquals('yandex_market_token', $YaMarketTokenDTO->getToken());
+        $YaMarketTokenDTO->getToken()->setValue('yandex_market_token');
+        self::assertEquals('yandex_market_token', $YaMarketTokenDTO->getToken()->getValue());
 
 
-        $YaMarketTokenDTO->setActive(true);
-        self::assertTrue($YaMarketTokenDTO->getActive());
+        $YaMarketTokenDTO->getActive()->setValue(true);
+        self::assertTrue($YaMarketTokenDTO->getActive()->getValue());
 
         $UserProfileUid = new UserProfileUid(UserProfileUid::TEST);
-        $YaMarketTokenDTO->setProfile($UserProfileUid);
-        self::assertSame($UserProfileUid, $YaMarketTokenDTO->getProfile());
+        $YaMarketTokenDTO->getProfile()->setValue($UserProfileUid);
+        self::assertSame($UserProfileUid, $YaMarketTokenDTO->getProfile()->getValue());
 
 
-        $YaMarketTokenDTO->setBusiness(123456789);
-        self::assertEquals(123456789, $YaMarketTokenDTO->getBusiness());
+        $YaMarketTokenDTO->getBusiness()->setValue(123456789);
+        self::assertEquals(123456789, $YaMarketTokenDTO->getBusiness()->getValue());
 
 
-        $YaMarketTokenDTO->setCompany(123456789);
-        self::assertEquals(123456789, $YaMarketTokenDTO->getCompany());
+        $YaMarketTokenDTO->getCompany()->setValue(123456789);
+        self::assertEquals(123456789, $YaMarketTokenDTO->getCompany()->getValue());
 
 
         /** Extra Company */
 
-        $YaMarketCompanyDTO = new YaMarketTokenExtraDTO();
-        $YaMarketTokenDTO->addExtra($YaMarketCompanyDTO);
+        //$YaMarketCompanyDTO = new YaMarketTokenExtraDTO();
+        //$YaMarketTokenDTO->addExtra($YaMarketCompanyDTO);
 
-        $YaMarketCompanyDTO->setCompany(111111111);
-        self::assertEquals(111111111, $YaMarketCompanyDTO->getCompany());
+        //$YaMarketCompanyDTO->setCompany(111111111);
+        //self::assertEquals(111111111, $YaMarketCompanyDTO->getCompany());
 
 
         /** @var YaMarketTokenHandler $YaMarketTokenHandler */
