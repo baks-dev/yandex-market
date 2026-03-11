@@ -30,7 +30,7 @@ use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-#[Autoconfigure(public: true)]
+// #[Autoconfigure(public: true)]
 interface YaMarketTokenCurrentEventInterface
 {
     public function forMain(YaMarketToken|YaMarketTokenUid $main): self;
