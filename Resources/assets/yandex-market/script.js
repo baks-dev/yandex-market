@@ -23,9 +23,9 @@
 
 /** Добавить контактный телефон */
 
-document.querySelectorAll('#add_company').forEach(function(item)
+document.querySelectorAll("#add_company").forEach(function(item)
 {
-    item.addEventListener('click', addTokenCompany);
+    item.addEventListener("click", addTokenCompany);
 });
 
 function addTokenCompany()
@@ -37,10 +37,10 @@ function addTokenCompany()
 
     newForm = newForm.replace(/__company__/g, index);
 
-    let div = document.createElement('div');
+    let div = document.createElement("div");
     div.innerHTML = newForm;
 
-    let delButton = div.querySelector('.del-item-company');
+    let delButton = div.querySelector(".del-item-company");
 
     if(delButton === null)
     {
@@ -48,21 +48,21 @@ function addTokenCompany()
     }
 
     div.id = delButton.dataset.delete;
-    div.classList.add('mb-3');
+    div.classList.add("mb-3");
 
     let $collection = document.getElementById(collection);
     $collection.append(div);
 
 
     /* Удаляем контактный номер телефона */
-    delButton.addEventListener('click', deleteTokenCompany);
+    delButton.addEventListener("click", deleteTokenCompany);
 
     this.dataset.index = (index + 1).toString();
 }
 
-document.querySelectorAll('.del-item-company').forEach(function(item)
+document.querySelectorAll(".del-item-company").forEach(function(item)
 {
-    item.addEventListener('click', deleteTokenCompany);
+    item.addEventListener("click", deleteTokenCompany);
 });
 
 function deleteTokenCompany()

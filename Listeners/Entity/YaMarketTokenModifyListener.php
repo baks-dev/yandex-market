@@ -28,9 +28,7 @@ namespace BaksDev\Yandex\Market\Listeners\Entity;
 
 use BaksDev\Core\Type\Ip\IpAddress;
 use BaksDev\Users\User\Entity\User;
-use BaksDev\Yandex\Market\Entity\Event\Modify\IpAddress\YaMarketTokenModifyIpAddress;
-use BaksDev\Yandex\Market\Entity\Event\Modify\User\YaMarketTokenModifyUser;
-use BaksDev\Yandex\Market\Entity\Event\Modify\UserAgent\YaMarketTokenModifyUserAgent;
+use BaksDev\Users\User\Repository\UserTokenStorage\UserTokenStorageInterface;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;
@@ -38,7 +36,6 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
-use BaksDev\Users\User\Repository\UserTokenStorage\UserTokenStorageInterface;
 
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: YaMarketTokenEvent::class)]
 final readonly class YaMarketTokenModifyListener

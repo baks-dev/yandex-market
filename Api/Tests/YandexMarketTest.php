@@ -72,7 +72,6 @@ class YandexMarketTest extends KernelTestCase
         );
 
 
-
         /** @var YandexMarketShopRequest $YandexMarketShopRequest */
         $YandexMarketShopRequest = self::getContainer()->get(YandexMarketShopRequest::class);
         $YandexMarketShopRequest->TokenHttpClient($AuthorizationFBS);

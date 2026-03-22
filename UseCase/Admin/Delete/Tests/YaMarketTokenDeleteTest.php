@@ -46,6 +46,31 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[Group('yandex-market')]
 class YaMarketTokenDeleteTest extends KernelTestCase
 {
+    public static function tearDownAfterClass(): void
+    {
+        /** @var EntityManagerInterface $em */
+        $em = self::getContainer()->get(EntityManagerInterface::class);
+
+        $main = $em->getRepository(YaMarketToken::class)
+            ->find(YaMarketTokenUid::TEST);
+
+        if($main)
+        {
+            $em->remove($main);
+        }
+
+        $event = $em->getRepository(YaMarketTokenEvent::class)
+            ->findBy(['main' => YaMarketTokenUid::TEST]);
+
+        foreach($event as $remove)
+        {
+            $em->remove($remove);
+        }
+
+        $em->flush();
+        $em->clear();
+    }
+
     #[DependsOnClass(YaMarketTokenNewTest::class)]
     #[DependsOnClass(YaMarketTokenEditTest::class)]
     public function testUseCase(): void
@@ -89,30 +114,5 @@ class YaMarketTokenDeleteTest extends KernelTestCase
 
         self::assertTrue(($handle instanceof YaMarketToken), $handle.': Ошибка YaMarketToken');
 
-    }
-
-    public static function tearDownAfterClass(): void
-    {
-        /** @var EntityManagerInterface $em */
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-
-        $main = $em->getRepository(YaMarketToken::class)
-            ->find(YaMarketTokenUid::TEST);
-
-        if($main)
-        {
-            $em->remove($main);
-        }
-
-        $event = $em->getRepository(YaMarketTokenEvent::class)
-            ->findBy(['main' => YaMarketTokenUid::TEST]);
-
-        foreach($event as $remove)
-        {
-            $em->remove($remove);
-        }
-
-        $em->flush();
-        $em->clear();
     }
 }

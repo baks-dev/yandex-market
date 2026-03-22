@@ -38,7 +38,7 @@ final class YaMarketTokenDeleteForm extends AbstractType
         $builder->add(
             'ya_market_token_delete',
             SubmitType::class,
-            ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-danger']]
+            ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-danger']],
         );
     }
 

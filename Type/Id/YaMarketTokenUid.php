@@ -26,7 +26,9 @@ declare(strict_types=1);
 namespace BaksDev\Yandex\Market\Type\Id;
 
 use BaksDev\Core\Type\UidType\Uid;
+use JsonException;
 use Symfony\Component\Uid\AbstractUid;
+use const JSON_THROW_ON_ERROR;
 
 
 final class YaMarketTokenUid extends Uid
@@ -45,7 +47,7 @@ final class YaMarketTokenUid extends Uid
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function getOption(): ?array
     {
@@ -54,12 +56,12 @@ final class YaMarketTokenUid extends Uid
             return null;
         }
 
-        if(false === json_validate($this->option, 512, \JSON_THROW_ON_ERROR))
+        if(false === json_validate($this->option, 512, JSON_THROW_ON_ERROR))
         {
             return null;
         }
 
-        $option = json_decode($this->option, true, 512, \JSON_THROW_ON_ERROR);
+        $option = json_decode($this->option, true, 512, JSON_THROW_ON_ERROR);
 
         return empty($option) ? null : $option;
     }

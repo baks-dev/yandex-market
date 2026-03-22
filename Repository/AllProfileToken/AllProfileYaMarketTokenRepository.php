@@ -88,7 +88,7 @@ final class AllProfileYaMarketTokenRepository implements AllProfileYaMarketToken
             ->setParameter(
                 'status',
                 UserProfileStatusActive::class,
-                UserProfileStatus::TYPE
+                UserProfileStatus::TYPE,
             );
 
         $dbal->join(

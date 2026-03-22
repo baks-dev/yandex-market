@@ -33,7 +33,6 @@ use BaksDev\Files\Resources\Upload\UploadEntityInterface;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

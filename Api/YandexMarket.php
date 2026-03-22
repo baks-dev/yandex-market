@@ -58,23 +58,6 @@ abstract class YandexMarket
         private readonly AppCacheInterface $cache,
     ) {}
 
-    public function forTokenIdentifier(YaMarketToken|YaMarketTokenUid $identifier): self
-    {
-        if($identifier instanceof YaMarketToken)
-        {
-            $identifier = $identifier->getId();
-        }
-
-        $this->AuthorizationToken = $this->YaMarketToken
-            ->forTokenIdentifier($identifier)
-            ->find();
-
-        $this->identifier = $identifier;
-
-        return $this;
-    }
-
-
     /** @deprecated */
     public function profile(): self
     {
@@ -120,6 +103,26 @@ abstract class YandexMarket
         );
     }
 
+    public function forTokenIdentifier(YaMarketToken|YaMarketTokenUid $identifier): self
+    {
+        if($identifier instanceof YaMarketToken)
+        {
+            $identifier = $identifier->getId();
+        }
+
+        $this->AuthorizationToken = $this->YaMarketToken
+            ->forTokenIdentifier($identifier)
+            ->find();
+
+        $this->identifier = $identifier;
+
+        return $this;
+    }
+
+    public function getTokenIdentifier(): YaMarketTokenUid|false
+    {
+        return $this->identifier;
+    }
 
     /**
      * Метод проверяет что окружение является PROD,
@@ -143,11 +146,6 @@ abstract class YandexMarket
     protected function getProfile(): ?UserProfileUid
     {
         return $this->AuthorizationToken->getProfile();
-    }
-
-    public function getTokenIdentifier(): YaMarketTokenUid|false
-    {
-        return $this->identifier;
     }
 
     protected function getBusiness(): int

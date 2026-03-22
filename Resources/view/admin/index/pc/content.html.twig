@@ -22,13 +22,13 @@
                 {% if is_granted(ROLE~'_NEW') or is_granted('ROLE_ADMIN') %}
 
                     <a href="{{ path('yandex-market:admin.newedit.new') }}"
-                           class="btn btn-primary fw-bolder modal-link disabled"
-                           data-bs-toggle="modal"
-                           data-bs-target="#modal"
-                           title='Добавить токен авторизации'
-                        >
-                            {{ 'btn.new'|trans({}, 'core.btn') }}
-                        </a>
+                       class="btn btn-primary fw-bolder modal-link disabled"
+                       data-bs-toggle="modal"
+                       data-bs-target="#modal"
+                       title='Добавить токен авторизации'
+                    >
+                        {{ 'btn.new'|trans({}, 'core.btn') }}
+                    </a>
 
                 {% endif %}
             </div>

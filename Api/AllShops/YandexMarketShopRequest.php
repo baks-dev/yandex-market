@@ -27,7 +27,6 @@ namespace BaksDev\Yandex\Market\Api\AllShops;
 
 use BaksDev\Yandex\Market\Api\YandexMarket;
 use DateInterval;
-use DomainException;
 use Generator;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -42,7 +41,7 @@ final class YandexMarketShopRequest extends YandexMarket
      *
      * @see https://yandex.ru/dev/market/partner-api/doc/ru/reference/campaigns/getCampaigns
      *
-     * @return \Generator<int, YandexMarketShopDTO>|false
+     * @return Generator<int, YandexMarketShopDTO>|false
      *
      */
     public function findAll(): Generator|false

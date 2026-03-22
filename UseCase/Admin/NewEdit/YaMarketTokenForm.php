@@ -77,7 +77,7 @@ final class YaMarketTokenForm extends AbstractType
         $builder->add(
             'ya_market_token',
             SubmitType::class,
-            ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-primary']]
+            ['label' => 'Save', 'label_html' => true, 'attr' => ['class' => 'btn-primary']],
         );
     }
 

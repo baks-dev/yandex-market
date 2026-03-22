@@ -31,6 +31,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Yandex\Market\Entity\Event\YaMarketTokenEvent;
 use BaksDev\Yandex\Market\Entity\YaMarketToken;
 use BaksDev\Yandex\Market\Type\Id\YaMarketTokenUid;
+use InvalidArgumentException;
 
 final class YaMarketTokenCurrentEventRepository implements YaMarketTokenCurrentEventInterface
 {
@@ -55,7 +56,7 @@ final class YaMarketTokenCurrentEventRepository implements YaMarketTokenCurrentE
     {
         if(false === ($this->main instanceof YaMarketTokenUid))
         {
-            throw new \InvalidArgumentException('Invalid Argument YaMarketToken');
+            throw new InvalidArgumentException('Invalid Argument YaMarketToken');
         }
 
         $orm = $this->ORMQueryBuilder->createQueryBuilder(self::class);

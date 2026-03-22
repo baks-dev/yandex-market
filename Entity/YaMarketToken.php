@@ -50,11 +50,6 @@ class YaMarketToken
         $this->id = new YaMarketTokenUid();
     }
 
-    public function getId(): YaMarketTokenUid
-    {
-        return $this->id;
-    }
-
     public function __toString(): string
     {
         return (string) $this->id;
@@ -65,10 +60,14 @@ class YaMarketToken
         return $this->event;
     }
 
-
     public function setEvent(YaMarketTokenEventUid|YaMarketTokenEvent $event): void
     {
         $this->event = $event instanceof YaMarketTokenEvent ? $event->getId() : $event;
+    }
+
+    public function getId(): YaMarketTokenUid
+    {
+        return $this->id;
     }
 
 }

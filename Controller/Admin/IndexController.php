@@ -54,7 +54,7 @@ final class IndexController extends AbstractController
             ->createForm(
                 type: SearchForm::class,
                 data: $search,
-                options: ['action' => $this->generateUrl('yandex-market:admin.index')]
+                options: ['action' => $this->generateUrl('yandex-market:admin.index')],
             )
             ->handleRequest($request);
 
@@ -70,7 +70,7 @@ final class IndexController extends AbstractController
             [
                 'query' => $query,
                 'search' => $searchForm->createView(),
-            ]
+            ],
         );
     }
 }
