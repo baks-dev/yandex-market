@@ -29,8 +29,10 @@ use BaksDev\Yandex\Market\Api\YandexMarket;
 use DateInterval;
 use Generator;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Contracts\Cache\ItemInterface;
 
+#[Autoconfigure(shared: false)]
 final class YandexMarketShopRequest extends YandexMarket
 {
     /**
