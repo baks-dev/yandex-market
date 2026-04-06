@@ -58,7 +58,7 @@ final class YandexMarketShopDTO
     public function __construct(UserProfileUid $profile, array $data)
     {
         $this->profile = $profile;
-        $this->name = $data['business']['name'];
+        $this->name = $data['domain'];
         $this->business = $data['business']['id'];
         $this->company = $data['id'];
         $this->client = $data['clientId'];
