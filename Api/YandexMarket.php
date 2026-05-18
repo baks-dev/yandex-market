@@ -131,6 +131,15 @@ abstract class YandexMarket
      */
     protected function isExecuteEnvironment(): bool
     {
+        if(false === ($this->identifier instanceof YaMarketTokenUid))
+        {
+            $this->logger->critical('Не указан идентификатор токена через вызов метода forTokenIdentifier', [self::class.':'.__LINE__]);
+
+            throw new InvalidArgumentException(
+                'Не указан идентификатор токена через вызов метода profile: ->forTokenIdentifier($YaMarketTokenUid)',
+            );
+        }
+
         return $this->environment === 'prod';
     }
 
